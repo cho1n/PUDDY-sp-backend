@@ -29,19 +29,15 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(secretByteKey);
     }
     public TokenDto generateToken(Authentication authentication){
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-        log.info(authorities);
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
-                .claim("auth", authorities)
+                .claim("auth", "ROLE_USER")
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 20))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
         String refreshToken = Jwts.builder()
                 .setSubject(authentication.getName())
-                .claim("auth", authorities)
+                .claim("auth", "ROLE_USER")
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 180))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
