@@ -25,7 +25,7 @@ public class Person {
     Date createdAt;
     Date updatedAt;
     String refreshToken;
-    public Person(String login, String password, String gender, String mainAddress, String subAddress, Date birth) {
+    public Person(String login, String password, String mainAddress, String subAddress, Date birth, String gender) {
         this.login = login;
         this.password = password;
         this.gender = gender;
@@ -33,7 +33,7 @@ public class Person {
         this.subAddress = subAddress;
         this.birth = birth;
     }
-    public Person updatePerson(String login, String password, String gender, String mainAddress, String subAddress, Date birth) {
+    public Person updatePerson(String login, String password, String mainAddress, String subAddress, Date birth, String gender) {
         this.login = login;
         this.password = password;
         this.gender = gender;
