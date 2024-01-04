@@ -1,30 +1,45 @@
 package sideproject.puddy.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access= AccessLevel.PROTECTED)
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    String login;
-    String password;
-    String gender;
-    String mainAddress;
-    String subAddress;
-    Date birth;
-    Date createdAt;
-    Date updatedAt;
-    String refreshToken;
+    private Long id;
+    private String login;
+    private String password;
+    private String gender;
+    private String mainAddress;
+    private String subAddress;
+    private Date birth;
+    private LocalDate createdAt;
+    private LocalDate updatedAt;
+    private String refreshToken;
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Post> posts = new ArrayList<>();
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comment> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PostLike> postLikes = new ArrayList<>();
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<TrailReview> trailReviews = new ArrayList<>();
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Review> reviews = new ArrayList<>();
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Dog> dogs = new ArrayList<>();
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Match> matches = new ArrayList<>();
     public Person(String login, String password, String mainAddress, String subAddress, Date birth, String gender) {
         this.login = login;
         this.password = password;
@@ -32,6 +47,8 @@ public class Person {
         this.mainAddress = mainAddress;
         this.subAddress = subAddress;
         this.birth = birth;
+        this.createdAt = LocalDate.now();
+        this.updatedAt = LocalDate.now();
     }
     public Person updatePerson(String login, String password, String mainAddress, String subAddress, Date birth, String gender) {
         this.login = login;
@@ -40,11 +57,10 @@ public class Person {
         this.mainAddress = mainAddress;
         this.subAddress = subAddress;
         this.birth = birth;
-        this.updatedAt = new Date();
+        this.updatedAt = LocalDate.now();
         return this;
     }
-    public Person updateToken(String refreshToken){
+    public void updateToken(String refreshToken){
         this.refreshToken = refreshToken;
-        return this;
     }
 }
