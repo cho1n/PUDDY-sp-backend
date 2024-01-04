@@ -3,9 +3,6 @@ package sideproject.puddy.security.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,7 +12,6 @@ import sideproject.puddy.model.Person;
 import sideproject.puddy.repository.PersonRepository;
 import sideproject.puddy.security.CustomUserDetails;
 
-import java.util.Collections;
 @Slf4j
 @Service
 @RequiredArgsConstructor
