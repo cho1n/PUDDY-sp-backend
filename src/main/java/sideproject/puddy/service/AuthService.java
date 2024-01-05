@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import sideproject.puddy.dto.kakao.Coordinates;
 import sideproject.puddy.dto.person.request.SignInRequest;
 import sideproject.puddy.dto.person.request.SignUpRequest;
 import sideproject.puddy.dto.token.TokenDto;
@@ -26,6 +27,7 @@ public class AuthService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
     private final PersonRepository personRepository;
+    private final KakaoMapService kakaoMapService;
     public ResponseEntity<String> findSameLogin(String login){
         if (findByLogin(login) != null){
             throw new RuntimeException("이미 존재하는 아이디 입니다.");
@@ -35,7 +37,8 @@ public class AuthService {
     @Transactional
     public ResponseEntity<String> signUp(SignUpRequest signUpRequest){
         String encodedPassword = encoder.encode(signUpRequest.getPassword());
-        personRepository.save(new Person(signUpRequest.getLogin(), encodedPassword, signUpRequest.getMainAddress(), signUpRequest.getSubAddress(), signUpRequest.getBirth(), signUpRequest.getGender()));
+        Coordinates coordinates = kakaoMapService.getCoordinate(signUpRequest.getMainAddress());
+        personRepository.save(new Person(signUpRequest.getLogin(), encodedPassword, signUpRequest.getMainAddress(), signUpRequest.getSubAddress(), signUpRequest.getBirth(), signUpRequest.getGender(), coordinates.getLat(), coordinates.getLng()));
         return ResponseEntity.ok().body("ok");
     }
     private ResponseEntity<String> getStringResponseEntity(TokenDto tokenDto, Person person) {
