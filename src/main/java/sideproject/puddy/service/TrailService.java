@@ -25,7 +25,7 @@ public class TrailService {
         for (TrailDto trail : trails){
             Double midLat = (trail.getStartLat() + trail.getEndLat()) / 2;
             Double midLng = (trail.getStartLong() + trail.getEndLong()) / 2;
-            if (distance(lat, lng, midLat, midLng) > 3000){
+            if (distance(lat, lng, midLat, midLng) <= 3000){
                 nearTrails.add(trail);
             }
         }
