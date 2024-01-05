@@ -54,6 +54,7 @@ public class AuthService {
             throw new RuntimeException("존재하지 않는 회원입니다.");
         }
         String encodedPassword = findByLogin(signInRequest.getLogin()).getPassword();
+        log.info(findByLogin(signInRequest.getLogin()).getLogin());
         if (!encoder.matches(signInRequest.getPassword(), encodedPassword)){
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }

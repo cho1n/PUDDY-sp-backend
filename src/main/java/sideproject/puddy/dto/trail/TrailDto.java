@@ -1,9 +1,8 @@
-package sideproject.puddy.dto.Trail;
+package sideproject.puddy.dto.trail;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 @Builder
 @Data

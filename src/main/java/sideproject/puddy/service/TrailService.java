@@ -3,8 +3,9 @@ package sideproject.puddy.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import sideproject.puddy.dto.Trail.TrailDto;
+import sideproject.puddy.dto.trail.TrailDto;
 import sideproject.puddy.model.Person;
+import sideproject.puddy.model.Trail;
 import sideproject.puddy.repository.TrailRepository;
 import sideproject.puddy.security.util.SecurityUtil;
 import java.util.ArrayList;
@@ -53,5 +54,8 @@ public class TrailService {
         double latDiff = lat2 - lat1;
         double lonDiff = lng2 - lng1;
         return Math.sqrt(latDiff * latDiff + lonDiff * lonDiff);
+    }
+    public Trail findById(Long id){
+        return trailRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 산책로 입니다."));
     }
 }
