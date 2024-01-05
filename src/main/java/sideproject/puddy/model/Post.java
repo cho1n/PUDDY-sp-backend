@@ -26,7 +26,7 @@ public class Post {
     private LocalDate updatedAt;
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PostLike> postLikes = new ArrayList<>();
 
     public Post(String title, String content, Person person) {

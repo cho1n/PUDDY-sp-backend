@@ -69,7 +69,7 @@ public class AuthService {
         Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
         Person person = findById(Long.valueOf(authentication.getName()));
         if (!person.getRefreshToken().equals(refreshToken)){
-            throw new RuntimeException("Refresh Token이 일치하지 않습니다");
+            throw new RuntimeException("Refresh Token이 유효하지 않습니다");
         }
         TokenDto tokens = jwtTokenProvider.generateToken(authentication);
         return getStringResponseEntity(tokens, person);
