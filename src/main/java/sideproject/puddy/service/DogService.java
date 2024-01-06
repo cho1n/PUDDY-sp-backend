@@ -66,4 +66,7 @@ public class DogService {
         Person person = authService.findById(SecurityUtil.getCurrentUserId());
         return dogRepository.findByPersonAndId(person, id).orElseThrow(() -> new IllegalArgumentException("반려동물이 없습니다"));
     }
+    public Dog findByPersonAndMain(Person person){
+        return dogRepository.findByPersonAndMain(person, true).orElseThrow(() -> new IllegalArgumentException("메인 반려동물이 없습니다"));
+    }
 }
