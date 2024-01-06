@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import sideproject.puddy.dto.trailreview.request.PostTrailReviewRequest;
 import sideproject.puddy.dto.trailreview.response.TrailReviewListResponse;
 import sideproject.puddy.dto.trailreview.response.TrailReviewResponse;
+import sideproject.puddy.exception.CustomException;
+import sideproject.puddy.exception.ErrorCode;
 import sideproject.puddy.model.Dog;
 import sideproject.puddy.model.Person;
 import sideproject.puddy.model.Trail;
@@ -29,7 +31,7 @@ public class TrailReviewService {
         Trail trail = trailService.findById(trailId);
         List<TrailReviewResponse> trailReviewResponses = trailReviewRepository.findAllByTrail(trail, pageRequest).stream().map(trailReview ->
                 new TrailReviewResponse(trailReview.getId(), trailReview.getStar(), trailReview.getContent(),
-                        trailReview.getReviewer().getGender(),
+                        trailReview.getReviewer().isGender(),
                         dogService.findByPersonAndMain(trailReview.getReviewer()).getName(),
                         dogService.findByPersonAndMain(trailReview.getReviewer()).getImage(), trailReview.getCreatedAt())).toList();
         return new TrailReviewListResponse((long) trailReviewResponses.size(), trailReviewResponses);
@@ -47,6 +49,6 @@ public class TrailReviewService {
         return ResponseEntity.ok().body("ok");
     }
     public TrailReview findById(Long id){
-        return trailReviewRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰입니다"));
+        return trailReviewRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
     }
 }

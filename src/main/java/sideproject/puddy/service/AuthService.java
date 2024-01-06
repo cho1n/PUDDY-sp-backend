@@ -16,6 +16,8 @@ import sideproject.puddy.dto.person.request.SignInRequest;
 import sideproject.puddy.dto.person.request.SignUpRequest;
 import sideproject.puddy.dto.person.response.SignUpResponse;
 import sideproject.puddy.dto.token.TokenDto;
+import sideproject.puddy.exception.CustomException;
+import sideproject.puddy.exception.ErrorCode;
 import sideproject.puddy.model.Person;
 import sideproject.puddy.repository.PersonRepository;
 import sideproject.puddy.security.jwt.JwtTokenProvider;
@@ -41,7 +43,7 @@ public class AuthService {
         Coordinates coordinates = kakaoMapService.getCoordinate(signUpRequest.getMainAddress());
         Person person = personRepository.save(new Person(signUpRequest.getLogin(), encodedPassword,
                 signUpRequest.getMainAddress(), signUpRequest.getSubAddress(),
-                LocalDate.parse(signUpRequest.getBirth(), DateTimeFormatter.ISO_DATE), signUpRequest.getGender(),
+                LocalDate.parse(signUpRequest.getBirth(), DateTimeFormatter.ISO_DATE), signUpRequest.isGender(),
                 coordinates.getLat(), coordinates.getLng()));
         return new SignUpResponse(person.getId());
     }
@@ -54,13 +56,9 @@ public class AuthService {
     }
     @Transactional
     public ResponseEntity<String> signIn(SignInRequest signInRequest){
-        if (!personRepository.existsByLogin(signInRequest.getLogin())){
-            throw new RuntimeException("존재하지 않는 회원입니다.");
-        }
         String encodedPassword = findByLogin(signInRequest.getLogin()).getPassword();
-        log.info(findByLogin(signInRequest.getLogin()).getLogin());
         if (!encoder.matches(signInRequest.getPassword(), encodedPassword)){
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+            throw new CustomException(ErrorCode.WRONG_LOGIN_INPUT);
         }
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 findByLogin(signInRequest.getLogin()).getId(), encodedPassword);
@@ -73,20 +71,20 @@ public class AuthService {
     public ResponseEntity<String> reissue(HttpServletRequest request) {
         String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
         if (!jwtTokenProvider.validateToken(refreshToken)){
-            throw new RuntimeException("Refresh Token이 유효하지 않습니다");
+            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
         Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
         Person person = findById(Long.valueOf(authentication.getName()));
         if (!person.getRefreshToken().equals(refreshToken)){
-            throw new RuntimeException("Refresh Token이 유효하지 않습니다");
+            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
         TokenDto tokens = jwtTokenProvider.generateToken(authentication);
         return getStringResponseEntity(tokens, person);
     }
     public Person findById(Long id){
-        return personRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다"));
+        return personRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
     public Person findByLogin(String login){
-        return personRepository.findByLogin(login).orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다"));
+        return personRepository.findByLogin(login).orElseThrow(() -> new CustomException(ErrorCode.WRONG_LOGIN_INPUT));
     }
 }

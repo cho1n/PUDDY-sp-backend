@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.util.StringUtils;
 import sideproject.puddy.dto.token.TokenDto;
+import sideproject.puddy.exception.CustomException;
+import sideproject.puddy.exception.ErrorCode;
+
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -50,7 +50,7 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String accessToken){
         Claims claims = parseClaims(accessToken);
         if (claims.get("auth") == null){
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+            throw new CustomException(ErrorCode.INVALID_ACCESS_TOKEN);
         }
         Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get("auth").toString().split(","))

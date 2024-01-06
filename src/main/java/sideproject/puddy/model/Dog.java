@@ -20,7 +20,7 @@ public class Dog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String gender;
+    private boolean gender;
     private LocalDate birth;
     private Long registerNum;
     private boolean neuter;
@@ -38,7 +38,7 @@ public class Dog {
     private LocalDate createdAt;
     private LocalDate updatedAt;
 
-    public Dog(String name, String gender, LocalDate birth, DogType dogType, Long registerNum, boolean neuter, boolean main, String image, Person person) {
+    public Dog(String name, boolean gender, LocalDate birth, DogType dogType, Long registerNum, boolean neuter, boolean main, String image, Person person) {
         this.name = name;
         this.gender = gender;
         this.birth = birth;
@@ -51,7 +51,7 @@ public class Dog {
         this.createdAt = LocalDate.now();
         this.updatedAt = LocalDate.now();
     }
-    public Dog updateDog(String image, DogType dogType, String gender, boolean neuter){
+    public Dog updateDog(String image, DogType dogType, boolean gender, boolean neuter){
         this.image = image;
         this.dogType = dogType;
         this.gender = gender;

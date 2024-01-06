@@ -10,7 +10,7 @@ import java.util.List;
 public class UpdateDogRequest {
     private String image;
     private String type;
-    private String gender;
+    private boolean gender;
     private boolean neuter;
     private List<TagDto> tags;
 }

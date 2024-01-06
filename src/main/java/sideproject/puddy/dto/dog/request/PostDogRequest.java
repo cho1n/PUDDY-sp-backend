@@ -12,7 +12,7 @@ public class PostDogRequest {
     private String name;
     private String birth;
     private String type;
-    private String gender;
+    private boolean gender;
     private boolean neuter;
     private List<TagDto> tags;
 }
