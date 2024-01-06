@@ -28,7 +28,7 @@ public class AuthController {
     public ResponseEntity<String> reissue(HttpServletRequest request){
         return authService.reissue(request);
     }
-    @PostMapping("/findsamelogin")
+    @GetMapping("/findsamelogin")
     public boolean findSameLogin(@RequestParam String login){
         return authService.findSameLogin(login);
     }
