@@ -22,7 +22,9 @@ public class Person {
     private String gender;
     private String mainAddress;
     private String subAddress;
-    private Date birth;
+    private LocalDate birth;
+    private Double latitude;
+    private Double longitude;
     private LocalDate createdAt;
     private LocalDate updatedAt;
     private String refreshToken;
@@ -32,31 +34,35 @@ public class Person {
     private List<Comment> comments = new ArrayList<>();
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PostLike> postLikes = new ArrayList<>();
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "reviewer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TrailReview> trailReviews = new ArrayList<>();
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Review> reviews = new ArrayList<>();
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Dog> dogs = new ArrayList<>();
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Match> matches = new ArrayList<>();
-    public Person(String login, String password, String mainAddress, String subAddress, Date birth, String gender) {
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Match> matched = new ArrayList<>();
+    public Person(String login, String password, String mainAddress, String subAddress, LocalDate birth, String gender, Double latitude, Double longitude) {
         this.login = login;
         this.password = password;
         this.gender = gender;
         this.mainAddress = mainAddress;
         this.subAddress = subAddress;
         this.birth = birth;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.createdAt = LocalDate.now();
         this.updatedAt = LocalDate.now();
     }
-    public Person updatePerson(String login, String password, String mainAddress, String subAddress, Date birth, String gender) {
+    public Person updatePerson(String login, String password, String mainAddress, String subAddress, LocalDate birth, String gender, Double latitude, Double longitude) {
         this.login = login;
         this.password = password;
         this.gender = gender;
         this.mainAddress = mainAddress;
         this.subAddress = subAddress;
         this.birth = birth;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.updatedAt = LocalDate.now();
         return this;
     }

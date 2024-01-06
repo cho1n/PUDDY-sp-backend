@@ -8,8 +8,8 @@ import java.util.Date;
 public class SignUpRequest {
     private String login;
     private String password;
+    private String gender;
     private String mainAddress;
     private String subAddress;
-    private Date birth;
-    private String gender;
+    private String birth;
 }
