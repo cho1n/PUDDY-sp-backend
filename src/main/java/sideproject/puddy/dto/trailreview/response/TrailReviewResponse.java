@@ -11,7 +11,7 @@ public class TrailReviewResponse {
     private Long id;
     private Integer star;
     private String content;
-    private String personGender;
+    private boolean personGender;
     private String dogName;
     private String dogImage;
     private LocalDate createdAt;

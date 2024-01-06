@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 public class DogDetailResponse {
     private String image;
-    private String gender;
+    private boolean gender;
     private String type;
     private boolean neuter;
     private List<TagDto> tags;

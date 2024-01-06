@@ -24,7 +24,7 @@ public class DogTransactionalService {
     @Transactional
     public void save(Person person, PostDogRequest request){
         boolean main = !dogRepository.existsByPerson(person);
-        Dog dog = dogRepository.save(new Dog(request.getName(), request.getGender(), LocalDate.parse(request.getBirth(), DateTimeFormatter.ISO_DATE)
+        Dog dog = dogRepository.save(new Dog(request.getName(), request.isGender(), LocalDate.parse(request.getBirth(), DateTimeFormatter.ISO_DATE)
                 , dogTypeService.findByContent(request.getType()), request.getRegisterNum(), request.isNeuter(), main, request.getImage(), person));
         request.getTags().forEach(dogTag -> dogTagMapRepository.save(new DogTagMap(dog, dogTagService.findByContent(dogTag.getContent()))));
     }

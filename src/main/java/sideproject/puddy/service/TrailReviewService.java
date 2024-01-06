@@ -31,7 +31,7 @@ public class TrailReviewService {
         Trail trail = trailService.findById(trailId);
         List<TrailReviewResponse> trailReviewResponses = trailReviewRepository.findAllByTrail(trail, pageRequest).stream().map(trailReview ->
                 new TrailReviewResponse(trailReview.getId(), trailReview.getStar(), trailReview.getContent(),
-                        trailReview.getReviewer().getGender(),
+                        trailReview.getReviewer().isGender(),
                         dogService.findByPersonAndMain(trailReview.getReviewer()).getName(),
                         dogService.findByPersonAndMain(trailReview.getReviewer()).getImage(), trailReview.getCreatedAt())).toList();
         return new TrailReviewListResponse((long) trailReviewResponses.size(), trailReviewResponses);

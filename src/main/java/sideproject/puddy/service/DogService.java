@@ -45,7 +45,7 @@ public class DogService {
     @Transactional
     public ResponseEntity<String> updateDog(Long id, UpdateDogRequest request){
         Dog dog = findByPersonAndId(id);
-        dog.updateDog(request.getImage(), dogTypeService.findByContent(request.getType()), request.getGender(), request.isNeuter());
+        dog.updateDog(request.getImage(), dogTypeService.findByContent(request.getType()), request.isGender(), request.isNeuter());
         dogTagMapRepository.deleteAll(dogTagMapRepository.findAllByDog(dog));
         request.getTags().forEach(dogTag -> dogTagMapRepository.save(new DogTagMap(dog, dogTagService.findByContent(dogTag.getContent()))));
         return ResponseEntity.ok().body("ok");
@@ -59,7 +59,7 @@ public class DogService {
     public DogDetailResponse findDog(Long id){
         Dog dog = findByPersonAndId(id);
         List<TagDto> tags = dog.getDogTagMaps().stream().map(dogTagMap -> new TagDto(dogTagMap.getDogTag().getContent())).toList();
-        return new DogDetailResponse(dog.getImage(), dog.getGender(), dog.getDogType().getContent(), dog.isNeuter(), tags);
+        return new DogDetailResponse(dog.getImage(), dog.isGender(), dog.getDogType().getContent(), dog.isNeuter(), tags);
     }
     public boolean existRegisterNum(Long registerNum){
         return registerNumberRepository.existsByRegisterNum(registerNum);
