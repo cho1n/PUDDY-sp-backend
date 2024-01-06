@@ -24,13 +24,14 @@ public class TrailReviewService {
     private final TrailReviewRepository trailReviewRepository;
     private final TrailService trailService;
     private final AuthService authService;
+    private final DogService dogService;
     public TrailReviewListResponse findAllReviewByTrail(Long trailId, PageRequest pageRequest){
         Trail trail = trailService.findById(trailId);
         List<TrailReviewResponse> trailReviewResponses = trailReviewRepository.findAllByTrail(trail, pageRequest).stream().map(trailReview ->
                 new TrailReviewResponse(trailReview.getId(), trailReview.getStar(), trailReview.getContent(),
                         trailReview.getReviewer().getGender(),
-                        getMainDog(trailReview.getReviewer().getDogs()).getName(),
-                        getMainDog(trailReview.getReviewer().getDogs()).getImage(), trailReview.getCreatedAt())).toList();
+                        dogService.findByPersonAndMain(trailReview.getReviewer()).getName(),
+                        dogService.findByPersonAndMain(trailReview.getReviewer()).getImage(), trailReview.getCreatedAt())).toList();
         return new TrailReviewListResponse((long) trailReviewResponses.size(), trailReviewResponses);
     }
     public ResponseEntity<String> saveTrailReview(Long trailId, PostTrailReviewRequest request){
@@ -47,9 +48,5 @@ public class TrailReviewService {
     }
     public TrailReview findById(Long id){
         return trailReviewRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰입니다"));
-    }
-    //대표 강아지 선택 임시코드 (dog service에서 건드려야할듯)
-    public Dog getMainDog(List<Dog> dogs){
-        return dogs.get(0);
     }
 }
