@@ -10,7 +10,6 @@ import sideproject.puddy.repository.TrailRepository;
 import sideproject.puddy.security.util.SecurityUtil;
 import java.util.ArrayList;
 import java.util.List;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -49,11 +48,6 @@ public class TrailService {
     }
     private Double rad2deg(Double rad){
         return (rad * 180 / Math.PI);
-    }
-    public double calculateDistance(double lat1, double lng1, double lat2, double lng2) {
-        double latDiff = lat2 - lat1;
-        double lonDiff = lng2 - lng1;
-        return Math.sqrt(latDiff * latDiff + lonDiff * lonDiff);
     }
     public Trail findById(Long id){
         return trailRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 산책로 입니다."));

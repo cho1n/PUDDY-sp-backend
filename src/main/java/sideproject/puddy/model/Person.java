@@ -19,7 +19,7 @@ public class Person {
     private Long id;
     private String login;
     private String password;
-    private String gender;
+    private boolean gender;
     private String mainAddress;
     private String subAddress;
     private LocalDate birth;
@@ -42,7 +42,7 @@ public class Person {
     private List<Match> matches = new ArrayList<>();
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Match> matched = new ArrayList<>();
-    public Person(String login, String password, String mainAddress, String subAddress, LocalDate birth, String gender, Double latitude, Double longitude) {
+    public Person(String login, String password, String mainAddress, String subAddress, LocalDate birth, boolean gender, Double latitude, Double longitude) {
         this.login = login;
         this.password = password;
         this.gender = gender;
@@ -54,7 +54,7 @@ public class Person {
         this.createdAt = LocalDate.now();
         this.updatedAt = LocalDate.now();
     }
-    public Person updatePerson(String login, String password, String mainAddress, String subAddress, LocalDate birth, String gender, Double latitude, Double longitude) {
+    public Person updatePerson(String login, String password, String mainAddress, String subAddress, LocalDate birth, boolean gender, Double latitude, Double longitude) {
         this.login = login;
         this.password = password;
         this.gender = gender;

@@ -9,6 +9,8 @@ import sideproject.puddy.dto.dog.request.PostDogRequest;
 import sideproject.puddy.dto.dog.request.UpdateDogRequest;
 import sideproject.puddy.dto.dog.response.DogDetailResponse;
 import sideproject.puddy.dto.tag.TagDto;
+import sideproject.puddy.exception.CustomException;
+import sideproject.puddy.exception.ErrorCode;
 import sideproject.puddy.model.Dog;
 import sideproject.puddy.model.DogTagMap;
 import sideproject.puddy.model.Person;
@@ -64,9 +66,9 @@ public class DogService {
     }
     public Dog findByPersonAndId(Long id){
         Person person = authService.findById(SecurityUtil.getCurrentUserId());
-        return dogRepository.findByPersonAndId(person, id).orElseThrow(() -> new IllegalArgumentException("반려동물이 없습니다"));
+        return dogRepository.findByPersonAndId(person, id).orElseThrow(() -> new CustomException(ErrorCode.DOG_NUM_NOT_FOUND));
     }
     public Dog findByPersonAndMain(Person person){
-        return dogRepository.findByPersonAndMain(person, true).orElseThrow(() -> new IllegalArgumentException("메인 반려동물이 없습니다"));
+        return dogRepository.findByPersonAndMain(person, true).orElseThrow(() -> new CustomException(ErrorCode.DOG_NUM_NOT_FOUND));
     }
 }

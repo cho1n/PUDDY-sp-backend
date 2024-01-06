@@ -1,13 +1,16 @@
 package sideproject.puddy.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class CustomExeptionHandler {
-    @ExceptionHandler(CustomExeption.class)
-    protected ResponseEntity<ErrorResponseEntity> handleCustomExeption(CustomExeption e) {
+public class CustomExceptionHandler {
+    @ExceptionHandler(CustomException.class)
+    protected ResponseEntity<ErrorResponseEntity> handleCustomException(CustomException e) {
         return ErrorResponseEntity.toResponseEntity(e.getErrorCode());
     }
 }
