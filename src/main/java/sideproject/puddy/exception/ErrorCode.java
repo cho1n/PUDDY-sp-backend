@@ -19,11 +19,6 @@
         REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 리뷰입니다."),
         ;
 
-        private final HttpStatus status;
+        private final HttpStatus httpStatus;
         private final String message;
-
-        ErrorCode(HttpStatus httpStatus, String s) {
-            message = null;
-            status = null;
-        }
     }
