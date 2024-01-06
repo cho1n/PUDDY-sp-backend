@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
-public class GetTrailReviewListResponse {
+public class TrailReviewResponse {
     private Long id;
     private Integer star;
     private String content;

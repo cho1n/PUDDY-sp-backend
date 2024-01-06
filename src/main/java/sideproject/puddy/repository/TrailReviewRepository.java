@@ -10,5 +10,5 @@ import org.springframework.data.domain.Pageable;
 
 @Repository
 public interface TrailReviewRepository extends JpaRepository<TrailReview, Long>{
-    Page<TrailReview> findByTrail(Trail trail, Pageable pageable);
+    Page<TrailReview> findAllByTrail(Trail trail, Pageable pageable);
 }

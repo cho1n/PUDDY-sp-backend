@@ -14,10 +14,14 @@ import org.springframework.stereotype.Service;
 import sideproject.puddy.dto.kakao.Coordinates;
 import sideproject.puddy.dto.person.request.SignInRequest;
 import sideproject.puddy.dto.person.request.SignUpRequest;
+import sideproject.puddy.dto.person.response.SignUpResponse;
 import sideproject.puddy.dto.token.TokenDto;
 import sideproject.puddy.model.Person;
 import sideproject.puddy.repository.PersonRepository;
 import sideproject.puddy.security.jwt.JwtTokenProvider;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Service
@@ -28,18 +32,18 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final PersonRepository personRepository;
     private final KakaoMapService kakaoMapService;
-    public ResponseEntity<String> findSameLogin(String login){
-        if (findByLogin(login) != null){
-            throw new RuntimeException("이미 존재하는 아이디 입니다.");
-        }
-        return ResponseEntity.ok().body("ok");
+    public boolean findSameLogin(String login){
+        return personRepository.existsByLogin(login);
     }
     @Transactional
-    public ResponseEntity<String> signUp(SignUpRequest signUpRequest){
+    public SignUpResponse signUp(SignUpRequest signUpRequest){
         String encodedPassword = encoder.encode(signUpRequest.getPassword());
         Coordinates coordinates = kakaoMapService.getCoordinate(signUpRequest.getMainAddress());
-        personRepository.save(new Person(signUpRequest.getLogin(), encodedPassword, signUpRequest.getMainAddress(), signUpRequest.getSubAddress(), signUpRequest.getBirth(), signUpRequest.getGender(), coordinates.getLat(), coordinates.getLng()));
-        return ResponseEntity.ok().body("ok");
+        Person person = personRepository.save(new Person(signUpRequest.getLogin(), encodedPassword,
+                signUpRequest.getMainAddress(), signUpRequest.getSubAddress(),
+                LocalDate.parse(signUpRequest.getBirth(), DateTimeFormatter.ISO_DATE), signUpRequest.getGender(),
+                coordinates.getLat(), coordinates.getLng()));
+        return new SignUpResponse(person.getId());
     }
     private ResponseEntity<String> getStringResponseEntity(TokenDto tokenDto, Person person) {
         person.updateToken(tokenDto.getRefreshToken());
@@ -58,7 +62,8 @@ public class AuthService {
         if (!encoder.matches(signInRequest.getPassword(), encodedPassword)){
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(findByLogin(signInRequest.getLogin()).getId(), encodedPassword);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                findByLogin(signInRequest.getLogin()).getId(), encodedPassword);
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         TokenDto tokenDto = jwtTokenProvider.generateToken(authentication);
         Person person = findById(Long.valueOf(authentication.getName()));
