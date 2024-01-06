@@ -4,12 +4,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sideproject.puddy.dto.person.request.SignInRequest;
 import sideproject.puddy.dto.person.request.SignUpRequest;
+import sideproject.puddy.dto.person.response.SignUpResponse;
 import sideproject.puddy.service.AuthService;
 
 @Slf4j
@@ -19,7 +17,7 @@ import sideproject.puddy.service.AuthService;
 public class AuthController {
     private final AuthService authService;
     @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@RequestBody SignUpRequest signUpRequest){
+    public SignUpResponse signUp(@RequestBody SignUpRequest signUpRequest){
         return authService.signUp(signUpRequest);
     }
     @PostMapping("/login")
@@ -31,7 +29,7 @@ public class AuthController {
         return authService.reissue(request);
     }
     @PostMapping("/findsamelogin")
-    public ResponseEntity<String> findSameLogin(@RequestBody String login){
+    public boolean findSameLogin(@RequestParam String login){
         return authService.findSameLogin(login);
     }
 }

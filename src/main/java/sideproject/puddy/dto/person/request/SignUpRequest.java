@@ -11,5 +11,5 @@ public class SignUpRequest {
     private String gender;
     private String mainAddress;
     private String subAddress;
-    private Date birth;
+    private String birth;
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
@@ -20,25 +21,28 @@ public class Dog {
     private Long id;
     private String name;
     private String gender;
-    private Date birth;
-    private String type;
+    private LocalDate birth;
     private Long registerNum;
     private boolean neuter;
+    @ColumnDefault("false")
     private boolean main;
     private String image;
     @ManyToOne
     @JoinColumn(name = "person_id")
     private Person person;
     @OneToMany(mappedBy = "dog", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<DogTag> dogTags = new ArrayList<>();
+    private List<DogTagMap> dogTagMaps = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "dogType_id")
+    private DogType dogType;
     private LocalDate createdAt;
     private LocalDate updatedAt;
 
-    public Dog(String name, String gender, Date birth, String type, Long registerNum, boolean neuter, boolean main, String image, Person person) {
+    public Dog(String name, String gender, LocalDate birth, DogType dogType, Long registerNum, boolean neuter, boolean main, String image, Person person) {
         this.name = name;
         this.gender = gender;
         this.birth = birth;
-        this.type = type;
+        this.dogType = dogType;
         this.registerNum = registerNum;
         this.neuter = neuter;
         this.main = main;
@@ -47,12 +51,16 @@ public class Dog {
         this.createdAt = LocalDate.now();
         this.updatedAt = LocalDate.now();
     }
-    public Dog updateDog(String image, String type, String gender, boolean neuter){
+    public Dog updateDog(String image, DogType dogType, String gender, boolean neuter){
         this.image = image;
-        this.type = type;
+        this.dogType = dogType;
         this.gender = gender;
         this.neuter = neuter;
         this.updatedAt = LocalDate.now();
+        return this;
+    }
+    public Dog updateMainDog(boolean main){
+        this.main = main;
         return this;
     }
 }

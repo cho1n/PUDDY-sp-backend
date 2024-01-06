@@ -7,7 +7,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sideproject.puddy.dto.trailreview.request.PostTrailReviewRequest;
-import sideproject.puddy.dto.trailreview.response.GetTrailReviewListResponse;
+import sideproject.puddy.dto.trailreview.response.TrailReviewListResponse;
+import sideproject.puddy.dto.trailreview.response.TrailReviewResponse;
 import sideproject.puddy.service.TrailReviewService;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class TrailReviewController {
         return trailReviewService.saveTrailReview(trailId, request);
     }
     @GetMapping("/review")
-    public List<GetTrailReviewListResponse> getTrailReviewList(@PathVariable Long trailId, @RequestParam int pageNum){
+    public TrailReviewListResponse getTrailReviewList(@PathVariable Long trailId, @RequestParam int pageNum){
         PageRequest pageRequest = PageRequest.of(pageNum - 1, 10, Sort.by("createdAt").descending());
         return trailReviewService.findAllReviewByTrail(trailId, pageRequest);
     }

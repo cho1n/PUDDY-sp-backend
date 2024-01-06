@@ -6,7 +6,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import sideproject.puddy.dto.trailreview.request.PostTrailReviewRequest;
-import sideproject.puddy.dto.trailreview.response.GetTrailReviewListResponse;
+import sideproject.puddy.dto.trailreview.response.TrailReviewListResponse;
+import sideproject.puddy.dto.trailreview.response.TrailReviewResponse;
 import sideproject.puddy.model.Dog;
 import sideproject.puddy.model.Person;
 import sideproject.puddy.model.Trail;
@@ -23,13 +24,14 @@ public class TrailReviewService {
     private final TrailReviewRepository trailReviewRepository;
     private final TrailService trailService;
     private final AuthService authService;
-    public List<GetTrailReviewListResponse> findAllReviewByTrail(Long trailId, PageRequest pageRequest){
+    public TrailReviewListResponse findAllReviewByTrail(Long trailId, PageRequest pageRequest){
         Trail trail = trailService.findById(trailId);
-        return trailReviewRepository.findByTrail(trail, pageRequest).stream().map(trailReview ->
-                new GetTrailReviewListResponse(trailReview.getId(), trailReview.getStar(), trailReview.getContent(),
+        List<TrailReviewResponse> trailReviewResponses = trailReviewRepository.findAllByTrail(trail, pageRequest).stream().map(trailReview ->
+                new TrailReviewResponse(trailReview.getId(), trailReview.getStar(), trailReview.getContent(),
                         trailReview.getReviewer().getGender(),
                         getMainDog(trailReview.getReviewer().getDogs()).getName(),
                         getMainDog(trailReview.getReviewer().getDogs()).getImage(), trailReview.getCreatedAt())).toList();
+        return new TrailReviewListResponse((long) trailReviewResponses.size(), trailReviewResponses);
     }
     public ResponseEntity<String> saveTrailReview(Long trailId, PostTrailReviewRequest request){
         Trail trail = trailService.findById(trailId);
