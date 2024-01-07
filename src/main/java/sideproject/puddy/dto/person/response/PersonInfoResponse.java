@@ -8,15 +8,10 @@ import java.time.LocalDate;
 @Builder
 public record PersonInfoResponse (
     String login,
-
     String password,
-
     LocalDate birth,
-
     String mainAddress,
-
     String subAddress,
-
     boolean gender
 ) {
     public static PersonInfoResponse of (
