@@ -18,8 +18,7 @@ public class PersonController {
 
     @GetMapping("/person")
     public ResponseEntity<PersonInfoResponse> getPersonInfo() {
-        final PersonInfoResponse myInformation = personService.findPersonInfo();
-        return ResponseEntity.ok(myInformation);
+        return ResponseEntity.ok(personService.findPersonInfo());
     }
 
     @DeleteMapping("/person")
