@@ -22,6 +22,11 @@ public class PersonController {
         return ResponseEntity.ok(myInformation);
     }
 
+    @DeleteMapping("/person")
+    public ResponseEntity<String> deletePerson() {
+        return personService.deletePerson();
+    }
+
     @PatchMapping("/person")
     public ResponseEntity<String> updatePersonInfo(
             @RequestBody UpdatePersonRequest updatePersonRequest

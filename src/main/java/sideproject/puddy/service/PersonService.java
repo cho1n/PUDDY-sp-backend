@@ -10,6 +10,7 @@ import sideproject.puddy.dto.kakao.Coordinates;
 import sideproject.puddy.dto.person.request.UpdatePersonRequest;
 import sideproject.puddy.dto.person.response.PersonInfoResponse;
 import sideproject.puddy.model.Person;
+import sideproject.puddy.repository.PersonRepository;
 import sideproject.puddy.security.util.SecurityUtil;
 
 @Slf4j
@@ -18,6 +19,7 @@ import sideproject.puddy.security.util.SecurityUtil;
 public class PersonService {
 
     private final AuthService authService;
+    private final PersonRepository personRepository;
     private final KakaoMapService kakaoMapService;
     private final BCryptPasswordEncoder encoder;
 
@@ -47,6 +49,13 @@ public class PersonService {
                 coordinates.getLat(),
                 coordinates.getLng()
         );
+        return ResponseEntity.ok().body("ok");
+    }
+
+    @Transactional
+    public ResponseEntity<String> deletePerson() {
+        Person person = authService.findById(SecurityUtil.getCurrentUserId());
+        personRepository.delete(person);
         return ResponseEntity.ok().body("ok");
     }
 
