@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -54,8 +53,15 @@ public class Person {
         this.createdAt = LocalDate.now();
         this.updatedAt = LocalDate.now();
     }
-    public Person updatePerson(String login, String password, String mainAddress, String subAddress, LocalDate birth, boolean gender, Double latitude, Double longitude) {
-        this.login = login;
+    public void updatePerson(
+            String password,
+            String mainAddress,
+            String subAddress,
+            LocalDate birth,
+            boolean gender,
+            Double latitude,
+            Double longitude
+    ) {
         this.password = password;
         this.gender = gender;
         this.mainAddress = mainAddress;
@@ -64,7 +70,6 @@ public class Person {
         this.latitude = latitude;
         this.longitude = longitude;
         this.updatedAt = LocalDate.now();
-        return this;
     }
     public void updateToken(String refreshToken){
         this.refreshToken = refreshToken;

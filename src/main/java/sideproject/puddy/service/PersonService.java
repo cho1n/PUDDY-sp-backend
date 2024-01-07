@@ -1,8 +1,12 @@
 package sideproject.puddy.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import sideproject.puddy.dto.kakao.Coordinates;
+import sideproject.puddy.dto.person.request.UpdatePersonRequest;
 import sideproject.puddy.dto.person.response.PersonInfoResponse;
 import sideproject.puddy.model.Person;
 import sideproject.puddy.security.util.SecurityUtil;
@@ -13,6 +17,7 @@ import sideproject.puddy.security.util.SecurityUtil;
 public class PersonService {
 
     private final AuthService authService;
+    private final KakaoMapService kakaoMapService;
 
     public PersonInfoResponse findPersonInfo() {
         Person person = authService.findById(SecurityUtil.getCurrentUserId());
@@ -24,6 +29,22 @@ public class PersonService {
                 person.getSubAddress(),
                 person.isGender()
         );
+    }
+
+    @Transactional
+    public ResponseEntity<String> updatePerson(UpdatePersonRequest updatePersonRequest) {
+        Person person = authService.findById(SecurityUtil.getCurrentUserId());
+        Coordinates coordinates = kakaoMapService.getCoordinate(updatePersonRequest.getMainAddress());
+        person.updatePerson(
+                updatePersonRequest.getPassword(),
+                updatePersonRequest.getMainAddress(),
+                updatePersonRequest.getSubAddress(),
+                updatePersonRequest.getBirth(),
+                updatePersonRequest.isGender(),
+                coordinates.getLat(),
+                coordinates.getLng()
+        );
+        return ResponseEntity.ok().body("ok");
     }
 
 }
