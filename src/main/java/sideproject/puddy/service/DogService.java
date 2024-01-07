@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import sideproject.puddy.dto.dog.request.PostDogRequest;
 import sideproject.puddy.dto.dog.request.UpdateDogRequest;
 import sideproject.puddy.dto.dog.response.DogDetailResponse;
+import sideproject.puddy.dto.dog.response.DogMyPageResponse;
 import sideproject.puddy.dto.tag.TagDto;
 import sideproject.puddy.exception.CustomException;
 import sideproject.puddy.exception.ErrorCode;
@@ -18,6 +19,8 @@ import sideproject.puddy.repository.DogRepository;
 import sideproject.puddy.repository.DogTagMapRepository;
 import sideproject.puddy.repository.RegisterNumberRepository;
 import sideproject.puddy.security.util.SecurityUtil;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -70,5 +73,19 @@ public class DogService {
     }
     public Dog findByPersonAndMain(Person person){
         return dogRepository.findByPersonAndMain(person, true).orElseThrow(() -> new CustomException(ErrorCode.DOG_NUM_NOT_FOUND));
+    }
+    public List<DogMyPageResponse> getDogMyPage(Person person) {
+        return dogRepository.findAllByPerson(person).stream()
+                .map(dog -> DogMyPageResponse.of(
+                        dog.getName(),
+                        calcAge(dog.getBirth().getYear()),
+                        dog.getDogType().getContent(),
+                        dog.isMain(),
+                        dog.getImage()
+                ))
+                .toList();
+    }
+    public Integer calcAge(Integer year) {
+        return LocalDate.now().getYear() - year + 1;
     }
 }

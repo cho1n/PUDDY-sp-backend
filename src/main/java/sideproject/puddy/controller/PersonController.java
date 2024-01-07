@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sideproject.puddy.dto.person.request.UpdatePersonRequest;
+import sideproject.puddy.dto.person.response.MyPageInfoResponse;
 import sideproject.puddy.dto.person.response.PersonInfoResponse;
 import sideproject.puddy.service.PersonService;
 
@@ -32,5 +33,11 @@ public class PersonController {
     ) {
        return personService.updatePerson(updatePersonRequest);
     }
+
+    @GetMapping("/person/mypage")
+    public ResponseEntity<MyPageInfoResponse> getMyPageInfo() {
+        return ResponseEntity.ok(personService.getMyPageInfo());
+    }
+
 
 }
