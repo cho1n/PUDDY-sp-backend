@@ -25,7 +25,6 @@ public class PersonService {
         Person person = authService.findById(SecurityUtil.getCurrentUserId());
         return PersonInfoResponse.of(
                 person.getLogin(),
-                person.getPassword(),
                 person.getBirth(),
                 person.getMainAddress(),
                 person.getSubAddress(),
@@ -37,8 +36,10 @@ public class PersonService {
     public ResponseEntity<String> updatePerson(UpdatePersonRequest updatePersonRequest) {
         Person person = authService.findById(SecurityUtil.getCurrentUserId());
         Coordinates coordinates = kakaoMapService.getCoordinate(updatePersonRequest.getMainAddress());
+        String password = (updatePersonRequest.getPassword() != null) ?
+                encoder.encode(updatePersonRequest.getPassword()) : person.getPassword();
         person.updatePerson(
-                encoder.encode(updatePersonRequest.getPassword()),
+                password,
                 updatePersonRequest.getMainAddress(),
                 updatePersonRequest.getSubAddress(),
                 updatePersonRequest.getBirth(),
