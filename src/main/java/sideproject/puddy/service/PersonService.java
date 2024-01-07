@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import sideproject.puddy.dto.kakao.Coordinates;
 import sideproject.puddy.dto.person.request.UpdatePersonRequest;
@@ -18,6 +19,7 @@ public class PersonService {
 
     private final AuthService authService;
     private final KakaoMapService kakaoMapService;
+    private final BCryptPasswordEncoder encoder;
 
     public PersonInfoResponse findPersonInfo() {
         Person person = authService.findById(SecurityUtil.getCurrentUserId());
@@ -36,7 +38,7 @@ public class PersonService {
         Person person = authService.findById(SecurityUtil.getCurrentUserId());
         Coordinates coordinates = kakaoMapService.getCoordinate(updatePersonRequest.getMainAddress());
         person.updatePerson(
-                updatePersonRequest.getPassword(),
+                encoder.encode(updatePersonRequest.getPassword()),
                 updatePersonRequest.getMainAddress(),
                 updatePersonRequest.getSubAddress(),
                 updatePersonRequest.getBirth(),
