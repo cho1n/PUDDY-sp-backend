@@ -2,12 +2,11 @@ package sideproject.puddy.dto.match.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import sideproject.puddy.dto.match.response.MatchPersonProfileDto;
-
+import sideproject.puddy.dto.match.response.RandomDogDetailResponse;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class MatchSearchResponse {
-    private List<MatchPersonProfileDto> persons;
+public class RandomDogDetailListResponse {
+    List<RandomDogDetailResponse> dogs;
 }
