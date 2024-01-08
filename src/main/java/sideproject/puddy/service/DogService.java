@@ -72,6 +72,9 @@ public class DogService {
         return dogRepository.findByPersonAndId(person, id).orElseThrow(() -> new CustomException(ErrorCode.DOG_NUM_NOT_FOUND));
     }
     public DogProfileDto findByPersonAndMain(Person person){
+        if (!dogRepository.existsByPersonAndMain(person, true)){
+            return new DogProfileDto(null, null);
+        }
         Dog dog = dogRepository.findByPersonAndMain(person, true).orElseThrow(() -> new CustomException(ErrorCode.DOG_NUM_NOT_FOUND));
         return new DogProfileDto(dog.getName(), dog.getImage());
     }
