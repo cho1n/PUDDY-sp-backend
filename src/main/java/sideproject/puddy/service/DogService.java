@@ -9,6 +9,7 @@ import sideproject.puddy.dto.dog.request.PostDogRequest;
 import sideproject.puddy.dto.dog.request.UpdateDogRequest;
 import sideproject.puddy.dto.dog.response.DogDetailResponse;
 import sideproject.puddy.dto.dog.response.DogMyPageResponse;
+import sideproject.puddy.dto.dog.response.DogProfileDto;
 import sideproject.puddy.dto.tag.TagDto;
 import sideproject.puddy.exception.CustomException;
 import sideproject.puddy.exception.ErrorCode;
@@ -53,6 +54,14 @@ public class DogService {
         dogRepository.delete(dog);
         return ResponseEntity.ok().body("ok");
     }
+    @Transactional
+    public ResponseEntity<String> updateMainDog(Long id){
+        Person person = authService.findById(SecurityUtil.getCurrentUserId());
+        Dog dog = findByPersonAndId(id);
+        dogRepository.findAllByPerson(person).forEach(dogs -> dogs.updateMainDog(false));
+        dog.updateMainDog(true);
+        return ResponseEntity.ok().body("ok");
+    }
     public DogDetailResponse findDog(Long id){
         Dog dog = findByPersonAndId(id);
         List<TagDto> tags = dog.getDogTagMaps().stream().map(dogTagMap -> new TagDto(dogTagMap.getDogTag().getContent())).toList();
@@ -62,8 +71,9 @@ public class DogService {
         Person person = authService.findById(SecurityUtil.getCurrentUserId());
         return dogRepository.findByPersonAndId(person, id).orElseThrow(() -> new CustomException(ErrorCode.DOG_NUM_NOT_FOUND));
     }
-    public Dog findByPersonAndMain(Person person){
-        return dogRepository.findByPersonAndMain(person, true).orElseThrow(() -> new CustomException(ErrorCode.DOG_NUM_NOT_FOUND));
+    public DogProfileDto findByPersonAndMain(Person person){
+        Dog dog = dogRepository.findByPersonAndMain(person, true).orElseThrow(() -> new CustomException(ErrorCode.DOG_NUM_NOT_FOUND));
+        return new DogProfileDto(dog.getName(), dog.getImage());
     }
     public List<DogMyPageResponse> getDogMyPage(Person person) {
         return dogRepository.findAllByPerson(person).stream()
