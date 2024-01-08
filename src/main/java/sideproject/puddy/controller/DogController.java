@@ -41,4 +41,8 @@ public class DogController {
     public boolean checkRegisterNum(@RequestParam Long registerNum){
         return registerNumberService.existRegisterNum(registerNum);
     }
+    @PatchMapping("/dog/{dogId}/changemain")
+    public ResponseEntity<String> updateMainDog(@PathVariable Long dogId){
+        return dogService.updateMainDog(dogId);
+    }
 }
