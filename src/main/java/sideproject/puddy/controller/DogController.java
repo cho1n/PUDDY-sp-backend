@@ -8,6 +8,7 @@ import sideproject.puddy.dto.dog.request.PostDogRequest;
 import sideproject.puddy.dto.dog.request.UpdateDogRequest;
 import sideproject.puddy.dto.dog.response.DogDetailResponse;
 import sideproject.puddy.service.DogService;
+import sideproject.puddy.service.RegisterNumberService;
 
 @Slf4j
 @RestController
@@ -15,6 +16,7 @@ import sideproject.puddy.service.DogService;
 @RequestMapping("/api")
 public class DogController {
     private final DogService dogService;
+    private final RegisterNumberService registerNumberService;
     @PostMapping("/dog")
     public ResponseEntity<String> postDog(@RequestBody PostDogRequest postDogRequest){
         return dogService.saveDog(postDogRequest);
@@ -37,6 +39,6 @@ public class DogController {
     }
     @GetMapping("/dog/check")
     public boolean checkRegisterNum(@RequestParam Long registerNum){
-        return dogService.existRegisterNum(registerNum);
+        return registerNumberService.existRegisterNum(registerNum);
     }
 }
