@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 public class PostListResponse {
     private Long count;
-    private List<PostResponse> postResponses;
+    private List<PostResponse> posts;
 }
 
 @Data

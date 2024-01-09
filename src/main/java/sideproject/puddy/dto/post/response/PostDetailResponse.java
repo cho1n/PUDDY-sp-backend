@@ -12,7 +12,7 @@ public class PostDetailResponse {
     private String title;
     private String content;
     private String createdAt;
-    private Like like;
+    private List<Like> likes;
     private List<Comment> comments;
     private boolean isMine;
 }
