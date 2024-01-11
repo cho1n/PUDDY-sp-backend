@@ -28,6 +28,11 @@ public class PostController {
         return postService.savePost(createRequest);
     }
 
+    @PostMapping("/post/{postId}")
+    public ResponseEntity<String> postLike(@PathVariable Long postId) {
+        return postService.postLike(postId);
+    }
+
     @PatchMapping("/post/{postId}")
     public ResponseEntity<String> updatePost(@RequestBody PostRequest updateRequest, @PathVariable Long postId) {
         return postService.updatePost(updateRequest, postId);

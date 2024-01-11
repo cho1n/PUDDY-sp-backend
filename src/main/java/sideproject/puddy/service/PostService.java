@@ -16,6 +16,7 @@ import sideproject.puddy.exception.CustomException;
 import sideproject.puddy.exception.ErrorCode;
 import sideproject.puddy.model.Person;
 import sideproject.puddy.model.Post;
+import sideproject.puddy.model.PostLike;
 import sideproject.puddy.repository.PostLikeRepository;
 import sideproject.puddy.repository.PostRepository;
 import sideproject.puddy.security.util.SecurityUtil;
@@ -27,15 +28,32 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostService {
 
-    private final PostRepository postRepository;
     private final AuthService authService;
     private final DogService dogService;
+    private final CommentService commentService;
+    private final PostRepository postRepository;
     private final PostLikeRepository postLikeRepository;
 
     @Transactional
     public ResponseEntity<String> savePost(PostRequest createRequest) {
         Person person = authService.findById(SecurityUtil.getCurrentUserId());
         postRepository.save(new Post(createRequest.getTitle(), createRequest.getContent(), person));
+        return ResponseEntity.ok().body("ok");
+    }
+
+    @Transactional
+    public ResponseEntity<String> postLike(Long postId) {
+        Person person = authService.findById(SecurityUtil.getCurrentUserId());
+        Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+        boolean isLike = postLikeRepository.existsByPostAndPerson(post, person);
+        if(!isLike)
+            postLikeRepository.save(new PostLike(person, post));
+        else {
+            PostLike postlike = postLikeRepository.findByPostAndPerson(post, person);
+            postLikeRepository.delete(postlike);
+        }
+
         return ResponseEntity.ok().body("ok");
     }
 
@@ -55,19 +73,14 @@ public class PostService {
         return ResponseEntity.ok().body("ok");
     }
 
+    public Post getPost(Long postId) {
+        return postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+    }
+
     public ResponseEntity<PostDetailResponse> readPost(Long postId) {
         Person person = authService.findById(SecurityUtil.getCurrentUserId());
         Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-
-        List<CommentDto> commentList = post.getComments().stream()
-                .map(comment -> CommentDto.builder()
-                        .person(new PersonProfileDto(comment.getPerson().isGender(), dogService.findByPersonAndMain(comment.getPerson())))
-                        .content(comment.getContent())
-                        .createdAt(comment.getCreatedAt().toString())
-                        .isMine(comment.getPerson().equals(person))
-                        .build()
-                )
-                .toList();
+        List<CommentDto> commentList = commentService.getCommentsInPost(person, post);
 
         PostDetailResponse postDetailResponse = PostDetailResponse.builder()
                 .id(post.getId())
