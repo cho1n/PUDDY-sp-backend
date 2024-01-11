@@ -2,7 +2,6 @@ package sideproject.puddy.dto.match.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import sideproject.puddy.dto.person.response.PersonProfileDto;
 import sideproject.puddy.dto.dog.response.DogProfileDto;
 import java.util.List;
 @Data
