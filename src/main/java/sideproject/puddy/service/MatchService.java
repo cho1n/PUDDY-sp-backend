@@ -1,67 +1,67 @@
 package sideproject.puddy.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sideproject.puddy.dto.match.response.MatchPersonProfileDto;
 import sideproject.puddy.dto.match.response.MatchSearchResponse;
+import sideproject.puddy.model.Dog;
 import sideproject.puddy.model.Match;
 import sideproject.puddy.model.Person;
 import sideproject.puddy.repository.MatchRepository;
 import sideproject.puddy.repository.PersonRepository;
-import sideproject.puddy.dto.dog.response.DogDetailResponse;
+import sideproject.puddy.security.util.SecurityUtil;
+import org.springframework.data.domain.Page;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class MatchService {
 
     private final MatchRepository matchRepository;
     private final PersonRepository personRepository;
+    private final AuthService authService;
 
-    @Autowired
-    public MatchService(MatchRepository matchRepository, PersonRepository personRepository) {
-        this.matchRepository = matchRepository;
-        this.personRepository = personRepository;
-    }
+    // 위치, 매칭 여부 -> (성별, 나이, 반려견 정보)
+    public MatchSearchResponse getMatchingByDog(int pageNum) {
+        Person currentUser = authService.findById(SecurityUtil.getCurrentUserId()) ;
 
-    public MatchSearchResponse findMatches(Long personId) {
-        Person sender = personRepository.findById(personId)
-                .orElseThrow(() -> new RuntimeException("Person not found"));
-
-        List<Match> matches = matchRepository.findBySenderOrReceiver(sender, sender);
-
-        List<MatchPersonProfileDto> matchPersonProfiles = matches.stream()
-                .map(match -> {
-                    Person matchedPerson = match.getSender().equals(sender) ? match.getReceiver() : match.getSender();
-                    return new MatchPersonProfileDto(
-                            matchedPerson.getId(),
-                            matchedPerson.isGender(),
-                            mapDogsToDto(matchedPerson.getDogs())
-                    );
-                })
-                .collect(Collectors.toList());
+        Page<MatchPersonProfileDto> matchPersonProfiles = matchRepository.findNearPersonNotMatched(
+                        SecurityUtil.getCurrentUserId(),
+                        !currentUser.isGender(),
+                        currentUser.getLongitude(),
+                        currentUser.getLatitude(),
+                        PageRequest.of(pageNum, 1)
+                )
+                .map(person -> new MatchPersonProfileDto(
+                        person.getId(),
+                        person.isGender(),
+                        mapDogsToDto(person.getDogs())
+                ));
 
         return new MatchSearchResponse(matchPersonProfiles);
     }
 
-    public void createMatch(Long senderId, Long receiverId) {
-        Person sender = personRepository.findById(senderId)
-                .orElseThrow(() -> new RuntimeException("Sender not found"));
-
+    @Transactional
+    public void likeProfile(Long receiverId) {
+        Person sender = authService.findById(SecurityUtil.getCurrentUserId()) ;
         Person receiver = personRepository.findById(receiverId)
                 .orElseThrow(() -> new RuntimeException("Receiver not found"));
 
         // 이미 매치된 경우에는 중복 생성하지 않도록 체크
-        if (!matchRepository.existsBySenderAndReceiver(sender, receiver)) {
-            Match match = new Match(sender, receiver);
-            matchRepository.save(match);
-        }
+        if (!matchRepository.existsBySenderAndReceiver(sender, receiver))
+            matchRepository.save(new Match(sender, receiver));
     }
 
-    private List<MatchPersonProfileDto.DogDto> mapDogsToDto(List<Dog> dogs) {
+    private List<DogProfileDto> mapDogsToDto(List<Dog> dogs) {
         return dogs.stream()
-                .map(dog -> new MatchPersonProfileDto.DogDto(dog.getImage(), dog.getName()))
+                .map(dog -> new DogProfileDto(dog.getImage(), dog.getName()))
                 .collect(Collectors.toList());
     }
 }
