@@ -11,6 +11,7 @@ import sideproject.puddy.dto.person.response.PersonProfileDto;
 import sideproject.puddy.dto.post.request.PostRequest;
 import sideproject.puddy.dto.post.response.PostDetailResponse;
 import sideproject.puddy.dto.post.response.PostListResponse;
+import sideproject.puddy.dto.post.response.PostResponseDto;
 import sideproject.puddy.exception.CustomException;
 import sideproject.puddy.exception.ErrorCode;
 import sideproject.puddy.model.Person;
@@ -83,8 +84,24 @@ public class PostService {
         return ResponseEntity.ok().body(postDetailResponse);
     }
 
-    public ResponseEntity<List<Post>> postList(PageRequest pageRequest, int pageNum) {
-        List<Post> postList = postRepository.findAll(pageRequest).getContent();
-        return ResponseEntity.ok().body(postList);
+    public ResponseEntity<PostListResponse> postList(PageRequest pageRequest) {
+        Person person = authService.findById(SecurityUtil.getCurrentUserId());
+
+        List<PostResponseDto> postList = postRepository.findAll(pageRequest).stream()
+                .map(post -> PostResponseDto.builder()
+                        .id(post.getId())
+                        .person(new PersonProfileDto(post.getPerson().isGender(), dogService.findByPersonAndMain(post.getPerson())))
+                        .title(post.getTitle())
+                        .content(post.getContent())
+                        .createdAt(post.getCreatedAt().toString())
+                        .likeCount(post.getPostLikes().size())
+                        .commentCount(post.getComments().size())
+                        .isMine(post.getPerson().equals(person))
+                        .build()
+                )
+                .toList();
+        PostListResponse postListResponse = new PostListResponse((long)pageRequest.getPageNumber()+1, postList);
+
+        return ResponseEntity.ok().body(postListResponse);
     }
 }

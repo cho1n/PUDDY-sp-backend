@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sideproject.puddy.dto.post.request.PostRequest;
@@ -43,8 +44,8 @@ public class PostController {
     }
 
     @GetMapping("/post")
-    public ResponseEntity<List<Post>> pageList(@RequestParam int pageNum){
-        PageRequest pageRequest = PageRequest.of(pageNum - 1, 10);
-        return postService.postList(pageRequest, pageNum);
+    public ResponseEntity<PostListResponse> pageList(@RequestParam int pageNum){
+        PageRequest pageRequest = PageRequest.of(pageNum - 1, 5);
+        return postService.postList(pageRequest);
     }
 }
