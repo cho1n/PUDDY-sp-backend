@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import sideproject.puddy.dto.trail.TrailDto;
+import sideproject.puddy.dto.trail.TrailListDto;
 import sideproject.puddy.model.Person;
 import sideproject.puddy.model.Trail;
 import sideproject.puddy.repository.TrailRepository;
@@ -16,7 +17,7 @@ import java.util.List;
 public class TrailService {
     private final TrailRepository trailRepository;
     private final AuthService authService;
-    public List<TrailDto> getNearTrails(){
+    public TrailListDto getNearTrails(){
         Person person = authService.findById(SecurityUtil.getCurrentUserId());
         List<TrailDto> trails = findAll();
         Double lat = person.getLatitude();
@@ -29,7 +30,7 @@ public class TrailService {
                 nearTrails.add(trail);
             }
         }
-        return nearTrails;
+        return new TrailListDto(nearTrails);
     }
     public List<TrailDto> findAll(){
         return trailRepository.findAll().stream().map(trail -> new TrailDto(trail.getId(), trail.getName(), trail.getStartLat(), trail.getStartLong(), trail.getEndLat(), trail.getEndLong())).toList();
