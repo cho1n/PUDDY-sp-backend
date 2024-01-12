@@ -31,7 +31,8 @@ public class TrailReviewService {
     public TrailReviewListResponse findAllReviewByTrail(Long trailId, PageRequest pageRequest){
         Trail trail = trailService.findById(trailId);
         Person person = authService.findById(SecurityUtil.getCurrentUserId());
-        List<TrailReviewResponse> trailReviewResponses = trailReviewRepository.findAllByTrail(trail, pageRequest).stream().map(trailReview ->
+        List<TrailReviewResponse> trailReviewResponses = trailReviewRepository
+                .findAllByTrail(trail, pageRequest).stream().map(trailReview ->
                 new TrailReviewResponse(
                         trailReview.getId(),
                         new PersonProfileDto(
