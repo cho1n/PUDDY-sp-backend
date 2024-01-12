@@ -5,10 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import sideproject.puddy.dto.trail.TrailDto;
+import sideproject.puddy.dto.trail.TrailListDto;
 import sideproject.puddy.service.TrailService;
 
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -17,7 +16,7 @@ import java.util.List;
 public class TrailController {
     private final TrailService trailService;
     @GetMapping("/trail")
-    public List<TrailDto> getNearTrailList(){
+    public TrailListDto getNearTrailList(){
         return trailService.getNearTrails();
     }
 }
