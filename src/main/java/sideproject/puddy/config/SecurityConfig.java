@@ -35,7 +35,9 @@ public class SecurityConfig {
                                 "/api/auth/reissue",
                                 "/api/{personId}/dog",
                                 "/api/kakao/address",
-                                "/api/auth/findsamelogin"
+                                "/api/auth/findsamelogin",
+                                "/api/dogtag",
+                                "/api/dogtype"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
