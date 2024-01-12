@@ -6,7 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sideproject.puddy.dto.dog.response.DogProfileDto;
-import sideproject.puddy.dto.match.response.*;
+import sideproject.puddy.dto.match.*;
 import sideproject.puddy.dto.tag.TagDto;
 import sideproject.puddy.exception.CustomException;
 import sideproject.puddy.exception.ErrorCode;
@@ -133,7 +133,7 @@ public class MatchService {
     public void likeProfile(Long receiverId) {
         Person sender = authService.findById(SecurityUtil.getCurrentUserId());
         Person receiver = personRepository.findById(receiverId)
-                .orElseThrow(() -> new RuntimeException("Receiver not found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         // 이미 매치된 경우에는 중복 생성하지 않도록 체크
         if (!matchRepository.existsBySenderAndReceiver(sender, receiver))
@@ -165,5 +165,3 @@ public class MatchService {
     }
 
 }
-
-

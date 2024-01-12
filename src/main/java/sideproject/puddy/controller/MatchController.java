@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sideproject.puddy.dto.match.response.MatchSearchResponse;
-import sideproject.puddy.dto.match.response.RandomDogDetailListResponse;
-import sideproject.puddy.dto.match.response.RandomDogDetailResponse;
+import sideproject.puddy.dto.match.MatchSearchResponse;
+import sideproject.puddy.dto.match.RandomDogDetailListResponse;
+import sideproject.puddy.dto.match.RandomDogDetailResponse;
 import sideproject.puddy.service.MatchService;
 
 @Slf4j

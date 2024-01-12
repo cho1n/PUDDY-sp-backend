@@ -1,9 +1,9 @@
-package sideproject.puddy.dto.match.response;
+package sideproject.puddy.dto.match;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import sideproject.puddy.dto.dog.response.DogProfileDto;
-import java.util.List;
+
 @Data
 @AllArgsConstructor
 public class MatchPersonProfileDto {
