@@ -9,14 +9,12 @@ import org.springframework.stereotype.Repository;
 import sideproject.puddy.model.Match;
 import sideproject.puddy.model.Person;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Repository
 public interface MatchRepository extends JpaRepository<Match, Long>{
-    boolean existsBySenderAndReceiver(Person sender, Person receiver);
+boolean existsBySenderAndReceiver(Person sender, Person receiver);
 
-    // List<Match> findByGenderAndMatched(boolean matched, boolean gender);
     @Query(value = "SELECT p " +
             "FROM Person p " +
             "WHERE p.gender = :gender " +
@@ -35,19 +33,5 @@ public interface MatchRepository extends JpaRepository<Match, Long>{
     );
 
     List<Match> findByReceiverId(Long id);
-
-//    @Query(value = "select p from Person p " +
-//            "join Match m on p.id = m.receiver.id " +
-//            "where p.gender = :gender " +
-//            "and (m.id is not null and m.sender.id = :currentUserId) "
-//    )
-//    Page<Person> findMatchedPersonInfo(
-//            @Param("currentUserId") Long currentUserId,
-//            @Param("gender") boolean gender,
-//            @Param("searchLongitude") Double searchLongitude,
-//            @Param("searchLatitude") Double searchLatitude,
-//            Pageable pageable
-//    );
-
-
+    List<Match> findByReceiverIdOrSenderId(Long senderId, Long receiverId);
 }

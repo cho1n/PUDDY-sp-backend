@@ -18,6 +18,7 @@ import sideproject.puddy.security.util.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -92,6 +93,36 @@ public class MatchService {
 
         return new MatchSearchResponse(matchPersonProfileDtoList);
     }
+
+    public MatchSearchResponse getSuccessMatched() {
+        Long currentUserId = SecurityUtil.getCurrentUserId();
+        List<Match> matches = matchRepository.findByReceiverIdOrSenderId(currentUserId, currentUserId);
+
+        List<MatchPersonProfileDto> result = new ArrayList<>();
+
+        for (Match sending : matches) {
+            Person sendingSender = sending.getSender();
+            Person sendingReceiver = sending.getReceiver();
+            for (Match received : matches) {
+                Person receivedSender = received.getSender();
+                Person receivedReceiver = received.getReceiver();
+
+                if (sendingSender.equals(receivedReceiver) && sendingReceiver.equals(receivedSender) &&
+                        !sendingReceiver.getId().equals(currentUserId)) {
+                    result.add(new MatchPersonProfileDto(
+                            receivedSender.getId(),
+                            receivedSender.isGender(),
+                            new DogProfileDto(
+                                    dogService.findByPersonAndMain(receivedSender).getImage(),
+                                    dogService.findByPersonAndMain(receivedSender).getName()
+                            )
+                    ));
+                }
+            }
+        }
+        return new MatchSearchResponse(result);
+    }
+
 
     private int calculateAge(LocalDate birthDate) {
         LocalDate currentDate = LocalDate.now();

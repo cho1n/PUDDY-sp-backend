@@ -33,6 +33,11 @@ public class MatchController {
         MatchSearchResponse matchSearchResponse = matchService.getPersonProfileWhoPostLike();
         return ResponseEntity.ok(matchSearchResponse);
     }
+    @GetMapping("/matched")
+    public ResponseEntity<MatchSearchResponse> findWhoPostMatched(){
+        MatchSearchResponse matchSearchResponse = matchService.getSuccessMatched();
+        return ResponseEntity.ok(matchSearchResponse);
+    }
 
     @PostMapping("/match/{personId}")
     public ResponseEntity<String> likePost(@PathVariable Long personId) {
