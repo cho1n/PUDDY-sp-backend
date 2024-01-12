@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sideproject.puddy.dto.dog.response.DogProfileDto;
 import sideproject.puddy.dto.match.response.*;
 import sideproject.puddy.dto.tag.TagDto;
 import sideproject.puddy.exception.CustomException;
@@ -66,6 +67,32 @@ public class MatchService {
         return new RandomDogDetailListResponse(dogs);
     }
 
+    public MatchSearchResponse getPersonProfileWhoPostLike() {
+        Person currentUser = authService.findById(SecurityUtil.getCurrentUserId());
+        List<Match> matches = matchRepository.findByReceiverId(currentUser.getId());
+
+        List<MatchPersonProfileDto> matchPersonProfileDtoList = matches
+                .stream()
+                .map(match -> {
+                    Long personId = match.getId();
+                    Person person = authService.findById(personId);
+                    Dog mainDog = dogService.findByPersonAndMain(person);
+
+                    DogProfileDto dogProfileDto = new DogProfileDto(
+                            mainDog.getImage(),
+                            mainDog.getName()
+                    );
+                    return new MatchPersonProfileDto(
+                            personId,
+                            mainDog.isGender(),
+                            dogProfileDto
+                    );
+                })
+                .collect(Collectors.toList());
+
+        return new MatchSearchResponse(matchPersonProfileDtoList);
+    }
+
     private int calculateAge(LocalDate birthDate) {
         LocalDate currentDate = LocalDate.now();
         return Period.between(birthDate, currentDate).getYears();
@@ -105,6 +132,7 @@ public class MatchService {
                 )
         );
     }
+
 }
 
 

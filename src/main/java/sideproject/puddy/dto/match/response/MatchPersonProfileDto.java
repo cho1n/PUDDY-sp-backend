@@ -9,5 +9,5 @@ import java.util.List;
 public class MatchPersonProfileDto {
     private Long id;
     private boolean gender;
-    private List<DogProfileDto> dog;
+    private DogProfileDto dog;
 }

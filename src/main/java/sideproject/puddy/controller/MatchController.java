@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sideproject.puddy.dto.match.response.MatchSearchResponse;
 import sideproject.puddy.dto.match.response.RandomDogDetailListResponse;
 import sideproject.puddy.dto.match.response.RandomDogDetailResponse;
 import sideproject.puddy.service.MatchService;
@@ -24,6 +25,12 @@ public class MatchController {
     @GetMapping("/random/{personId}")
     public ResponseEntity<RandomDogDetailResponse> findMatchDetailByPerson(@PathVariable Long personId){
         RandomDogDetailResponse matchSearchResponse = matchService.getShowingByMatchDetail(personId);
+        return ResponseEntity.ok(matchSearchResponse);
+    }
+
+    @GetMapping("/match")
+    public ResponseEntity<MatchSearchResponse> findWhoPostLike(){
+        MatchSearchResponse matchSearchResponse = matchService.getPersonProfileWhoPostLike();
         return ResponseEntity.ok(matchSearchResponse);
     }
 
