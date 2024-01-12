@@ -4,16 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sideproject.puddy.dto.post.request.PostRequest;
 import sideproject.puddy.dto.post.response.PostDetailResponse;
 import sideproject.puddy.dto.post.response.PostListResponse;
-import sideproject.puddy.model.Post;
+import sideproject.puddy.service.PostAndCommentService;
 import sideproject.puddy.service.PostService;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -22,6 +19,7 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final PostAndCommentService postAndCommentService;
 
     @PostMapping("/post")
     public ResponseEntity<String> createPost(@RequestBody PostRequest createRequest) {
@@ -45,12 +43,12 @@ public class PostController {
 
     @GetMapping("/post/{postId}")
     public ResponseEntity<PostDetailResponse> readPost(@PathVariable Long postId) {
-        return postService.readPost(postId);
+        return postAndCommentService.readPost(postId);
     }
 
     @GetMapping("/post")
     public ResponseEntity<PostListResponse> pageList(@RequestParam int pageNum){
-        PageRequest pageRequest = PageRequest.of(pageNum - 1, 5);
+        PageRequest pageRequest = PageRequest.of(pageNum - 1, 5, Sort.by("id").reverse());
         return postService.postList(pageRequest);
     }
 }

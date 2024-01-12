@@ -6,10 +6,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sideproject.puddy.dto.comment.response.CommentDto;
 import sideproject.puddy.dto.person.response.PersonProfileDto;
 import sideproject.puddy.dto.post.request.PostRequest;
-import sideproject.puddy.dto.post.response.PostDetailResponse;
 import sideproject.puddy.dto.post.response.PostListResponse;
 import sideproject.puddy.dto.post.response.PostResponseDto;
 import sideproject.puddy.exception.CustomException;
@@ -30,7 +28,6 @@ public class PostService {
 
     private final AuthService authService;
     private final DogService dogService;
-    private final CommentService commentService;
     private final PostRepository postRepository;
     private final PostLikeRepository postLikeRepository;
 
@@ -75,26 +72,6 @@ public class PostService {
 
     public Post getPost(Long postId) {
         return postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-    }
-
-    public ResponseEntity<PostDetailResponse> readPost(Long postId) {
-        Person person = authService.findById(SecurityUtil.getCurrentUserId());
-        Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-        List<CommentDto> commentList = commentService.getCommentsInPost(person, post);
-
-        PostDetailResponse postDetailResponse = PostDetailResponse.builder()
-                .id(post.getId())
-                .person(new PersonProfileDto(post.getPerson().isGender(), dogService.findByPersonAndMain(post.getPerson())))
-                .title(post.getTitle())
-                .content(post.getContent())
-                .createdAt(post.getCreatedAt().toString())
-                .isLike(postLikeRepository.existsByPostAndPerson(post, person))
-                .likeCount(post.getPostLikes().size())
-                .comments(commentList)
-                .isMine(post.getPerson().equals(person))
-                .build();
-
-        return ResponseEntity.ok().body(postDetailResponse);
     }
 
     public ResponseEntity<PostListResponse> postList(PageRequest pageRequest) {
