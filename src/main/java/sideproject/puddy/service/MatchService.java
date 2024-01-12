@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sideproject.puddy.dto.match.response.*;
 import sideproject.puddy.dto.tag.TagDto;
+import sideproject.puddy.exception.CustomException;
+import sideproject.puddy.exception.ErrorCode;
 import sideproject.puddy.model.*;
 import sideproject.puddy.repository.MatchRepository;
 import sideproject.puddy.repository.PersonRepository;
@@ -34,17 +36,15 @@ public class MatchService {
         Person currentUser = authService.findById(SecurityUtil.getCurrentUserId());
 
         List<RandomDogDetailResponse> dogs = matchRepository.findNearPersonNotMatched(
-//                        SecurityUtil.getCurrentUserId(),
+                        SecurityUtil.getCurrentUserId(),
                         !currentUser.isGender(),
-//                        currentUser.getLongitude(),
-//                        currentUser.getLatitude(),
+                        currentUser.getLongitude(),
+                        currentUser.getLatitude(),
                         PageRequest.of(pageNum, 1)
                 )
                 .map(person -> {
                     // 각 상대방의 main 강아지 탐색
-                    log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@person: {}", person);
                     Dog mainDog = dogService.findByPersonAndMain(person);
-                    log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@person: {}", mainDog);
 
                     RandomDogProfileDto randomDogProfileDto = new RandomDogProfileDto(
                             mainDog.getName(),
@@ -55,6 +55,7 @@ public class MatchService {
                     );
 
                     return new RandomDogDetailResponse(
+                            person.getId(),
                             person.isGender(),
                             calculateAge(person.getBirth()),
                             person.getMainAddress(),
@@ -62,7 +63,6 @@ public class MatchService {
                     );
                 })
                 .toList();
-        log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@person: {}", dogs);
         return new RandomDogDetailListResponse(dogs);
     }
 
@@ -71,7 +71,7 @@ public class MatchService {
         return Period.between(birthDate, currentDate).getYears();
     }
 
-    @Transactional
+        @Transactional
     public void likeProfile(Long receiverId) {
         Person sender = authService.findById(SecurityUtil.getCurrentUserId());
         Person receiver = personRepository.findById(receiverId)
@@ -87,4 +87,24 @@ public class MatchService {
                 .map(dogTagMap -> new TagDto(dogTagMap.getDogTag().getContent()))
                 .collect(Collectors.toList());
     }
+    public RandomDogDetailResponse getShowingByMatchDetail(Long personId) {
+        Person person = personRepository.findById(personId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        Dog mainDog = dogService.findByPersonAndMain(person);
+        return new RandomDogDetailResponse(
+                person.getId(),
+                person.isGender(),
+                calculateAge(person.getBirth()),
+                person.getMainAddress(),
+                new RandomDogProfileDto(
+                        mainDog.getName(),
+                        mainDog.getImage(),
+                        mainDog.getDogType().getContent(),
+                        calculateAge(mainDog.getBirth()),
+                        mapTagsToDto(mainDog.getDogTagMaps())
+                )
+        );
+    }
 }
+
+

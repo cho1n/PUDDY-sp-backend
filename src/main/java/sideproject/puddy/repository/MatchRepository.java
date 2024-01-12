@@ -17,18 +17,18 @@ public interface MatchRepository extends JpaRepository<Match, Long>{
     // List<Match> findByGenderAndMatched(boolean matched, boolean gender);
     @Query(value = "SELECT p " +
             "FROM Person p " +
-            "WHERE p.gender = :gender" )
-//            "AND NOT EXISTS ( " +
-//            "SELECT m FROM Match m " +
-//            "WHERE m.receiver.id = p.id " +
-//            "AND m.sender.id = :currentUserId) " +
-//            "AND FUNCTION('ST_DISTANCE_SPHERE', FUNCTION('POINT', p.longitude, p.latitude), FUNCTION('POINT', :searchLongitude, :searchLatitude)) <= 3000"
-//    )
+            "WHERE p.gender = :gender " +
+            "AND NOT EXISTS ( " +
+            "SELECT m FROM Match m " +
+            "WHERE m.receiver.id = p.id " +
+            "AND m.sender.id = :currentUserId) " +
+            "AND FUNCTION('ST_DISTANCE_SPHERE', FUNCTION('POINT', p.longitude, p.latitude), FUNCTION('POINT', :searchLongitude, :searchLatitude)) <= 3000"
+    )
     Page<Person> findNearPersonNotMatched(
-//            @Param("currentUserId") Long currentUserId,
+            @Param("currentUserId") Long currentUserId,
             @Param("gender") boolean gender,
-//            @Param("searchLongitude") Double searchLongitude,
-//            @Param("searchLatitude") Double searchLatitude,
+            @Param("searchLongitude") Double searchLongitude,
+            @Param("searchLatitude") Double searchLatitude,
             Pageable pageable
     );
 

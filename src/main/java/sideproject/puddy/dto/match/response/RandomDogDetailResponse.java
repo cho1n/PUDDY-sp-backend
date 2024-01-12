@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class RandomDogDetailResponse {
+    private Long id;
     private boolean gender;
     private Integer age;
     private String mainAddress;
