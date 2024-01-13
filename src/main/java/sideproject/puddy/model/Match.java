@@ -20,11 +20,15 @@ public class Match {
     @ManyToOne
     @JoinColumn(name = "receiver_id")
     private Person receiver;
+    private boolean matched;
     private LocalDate createdAt;
 
     public Match(Person sender, Person receiver) {
         this.sender = sender;
         this.receiver = receiver;
+        this.matched = false;
         this.createdAt = LocalDate.now();
     }
+
+
 }
