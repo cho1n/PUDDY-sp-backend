@@ -36,7 +36,7 @@ public class PostAndCommentService {
 
         PostDetailResponse postDetailResponse = PostDetailResponse.builder()
                 .id(post.getId())
-                .person(new PersonProfileDto(post.getPerson().isGender(), dogService.findByPersonAndMain(post.getPerson())))
+                .person(new PersonProfileDto(post.getPerson().isGender(), dogService.findProfileByPersonAndMain(post.getPerson())))
                 .title(post.getTitle())
                 .content(post.getContent())
                 .createdAt(post.getCreatedAt().toString())

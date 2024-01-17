@@ -37,7 +37,7 @@ public class TrailReviewService {
                         trailReview.getId(),
                         new PersonProfileDto(
                                 trailReview.getReviewer().isGender(),
-                                dogService.findByPersonAndMain(trailReview.getReviewer())
+                                dogService.findProfileByPersonAndMain(trailReview.getReviewer())
                         ),
                         trailReview.getStar(),
                         trailReview.getContent(),
