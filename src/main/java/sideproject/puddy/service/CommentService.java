@@ -56,16 +56,15 @@ public class CommentService {
     }
 
     public List<CommentDto> getCommentsInPost (Person person, Post post) {
-        List<CommentDto> commentList = post.getComments().stream()
+
+        return post.getComments().stream()
                 .map(comment -> CommentDto.builder()
-                        .person(new PersonProfileDto(comment.getPerson().isGender(), dogService.findByPersonAndMain(comment.getPerson())))
+                        .person(new PersonProfileDto(comment.getPerson().isGender(), dogService.findProfileByPersonAndMain(comment.getPerson())))
                         .content(comment.getContent())
                         .createdAt(comment.getCreatedAt().toString())
                         .isMine(comment.getPerson().equals(person))
                         .build()
                 )
                 .toList();
-
-        return commentList;
     }
 }
