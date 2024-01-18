@@ -37,7 +37,8 @@ public class SecurityConfig {
                                 "/api/kakao/address",
                                 "/api/auth/findsamelogin",
                                 "/api/dogtag",
-                                "/api/dogtype"
+                                "/api/dogtype",
+                                "/api/dog/check"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
