@@ -9,6 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 public class RandomDogProfileDto {
     private String name;
+    private boolean gender;
     private String image;
     private String type;
     private Integer age;
