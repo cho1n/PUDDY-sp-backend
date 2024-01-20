@@ -50,6 +50,7 @@ public class MatchService {
 
                     RandomDogProfileDto randomDogProfileDto = new RandomDogProfileDto(
                             mainDog.getName(),
+                            mainDog.isGender(),
                             mainDog.getImage(),
                             mainDog.getDogType().getContent(),
                             calculateAge(mainDog.getBirth()),
@@ -158,6 +159,7 @@ public class MatchService {
                 person.getMainAddress(),
                 new RandomDogProfileDto(
                         mainDog.getName(),
+                        mainDog.isGender(),
                         mainDog.getImage(),
                         mainDog.getDogType().getContent(),
                         calculateAge(mainDog.getBirth()),
