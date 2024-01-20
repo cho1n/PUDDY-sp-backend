@@ -22,7 +22,8 @@ boolean existsBySenderAndReceiver(Person sender, Person receiver);
             "SELECT m FROM Match m " +
             "WHERE m.receiver.id = p.id " +
             "AND m.sender.id = :currentUserId) " +
-            "AND FUNCTION('ST_DISTANCE_SPHERE', FUNCTION('POINT', p.longitude, p.latitude), FUNCTION('POINT', :searchLongitude, :searchLatitude)) <= 3000"
+            "AND FUNCTION('ST_DISTANCE_SPHERE', FUNCTION('POINT', p.longitude, p.latitude), FUNCTION('POINT', :searchLongitude, :searchLatitude)) <= 3000" +
+            "ORDER BY RAND()"
     )
     Page<Person> findNearPersonNotMatched(
             @Param("currentUserId") Long currentUserId,
