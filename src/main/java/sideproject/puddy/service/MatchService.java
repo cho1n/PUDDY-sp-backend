@@ -58,6 +58,7 @@ public class MatchService {
 
                     return new RandomDogDetailResponse(
                             person.getId(),
+                            person.getLogin(),
                             person.isGender(),
                             calculateAge(person.getBirth()),
                             person.getMainAddress(),
@@ -151,6 +152,7 @@ public class MatchService {
         Dog mainDog = dogService.findByPersonAndMain(person);
         return new RandomDogDetailResponse(
                 person.getId(),
+                person.getLogin(),
                 person.isGender(),
                 calculateAge(person.getBirth()),
                 person.getMainAddress(),
