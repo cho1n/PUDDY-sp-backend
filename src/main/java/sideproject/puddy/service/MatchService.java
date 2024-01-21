@@ -82,8 +82,8 @@ public class MatchService {
                     Dog mainDog = dogService.findByPersonAndMain(person);
 
                     DogProfileDto dogProfileDto = new DogProfileDto(
-                            mainDog.getImage(),
-                            mainDog.getName()
+                            mainDog.getName(),
+                            mainDog.getImage()
                     );
                     return new MatchPersonProfileDto(
                             personId,
