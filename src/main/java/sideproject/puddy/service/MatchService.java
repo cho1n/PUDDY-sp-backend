@@ -42,7 +42,7 @@ public class MatchService {
                         !currentUser.isGender(),
                         currentUser.getLongitude(),
                         currentUser.getLatitude(),
-                        PageRequest.of(pageNum - 1, 1)
+                        PageRequest.of(pageNum - 1, 10)
                 )
                 .map(person -> {
                     // 각 상대방의 main 강아지 탐색
