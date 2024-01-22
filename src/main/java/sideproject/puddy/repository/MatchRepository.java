@@ -8,6 +8,7 @@ import sideproject.puddy.model.Match;
 import sideproject.puddy.model.Person;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MatchRepository extends JpaRepository<Match, Long>{
@@ -33,4 +34,5 @@ boolean existsBySenderAndReceiver(Person sender, Person receiver);
 
     List<Match> findByReceiverId(Long id);
     List<Match> findByReceiverIdOrSenderId(Long senderId, Long receiverId);
+    Optional<Match> findBySenderAndReceiver(Person sender, Person receiver);
 }

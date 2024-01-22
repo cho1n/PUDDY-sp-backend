@@ -10,23 +10,21 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @NoArgsConstructor(access= AccessLevel.PROTECTED)
-public class Match {
+public class Chat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "sender_id")
-    private Person sender;
+    @JoinColumn(name = "firstPerson_id")
+    private Person firstPerson;
     @ManyToOne
-    @JoinColumn(name = "receiver_id")
-    private Person receiver;
+    @JoinColumn(name = "secondPerson_id")
+    private Person secondPerson;
     private LocalDate createdAt;
 
-    public Match(Person sender, Person receiver) {
-        this.sender = sender;
-        this.receiver = receiver;
+    public Chat(Person firstPerson, Person secondPerson) {
+        this.firstPerson = firstPerson;
+        this.secondPerson = secondPerson;
         this.createdAt = LocalDate.now();
     }
-
-
 }
