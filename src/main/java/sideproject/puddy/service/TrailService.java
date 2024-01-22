@@ -30,7 +30,7 @@ public class TrailService {
                 nearTrails.add(trail);
             }
         }
-        return new TrailListDto(nearTrails);
+        return new TrailListDto(nearTrails, person.getLatitude(), person.getLongitude(), person.getMainAddress());
     }
     public List<TrailDto> findAll(){
         return trailRepository.findAll().stream().map(trail -> new TrailDto(trail.getId(), trail.getName(), trail.getStartLat(), trail.getStartLong(), trail.getEndLat(), trail.getEndLong())).toList();
