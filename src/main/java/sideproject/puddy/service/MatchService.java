@@ -2,7 +2,6 @@ package sideproject.puddy.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sideproject.puddy.dto.dog.response.DogProfileDto;
@@ -34,16 +33,15 @@ public class MatchService {
 
 
     // 위치, 매칭 여부 -> (성별, 나이, 반려견 정보)
-    public RandomDogDetailListResponse getMatchingByDog(int pageNum) {
+    public RandomDogDetailListResponse getMatchingByDog() {
         Person currentUser = authService.findById(SecurityUtil.getCurrentUserId());
 
         List<RandomDogDetailResponse> dogs = matchRepository.findNearPersonNotMatched(
                         SecurityUtil.getCurrentUserId(),
                         !currentUser.isGender(),
                         currentUser.getLongitude(),
-                        currentUser.getLatitude(),
-                        PageRequest.of(pageNum - 1, 10)
-                )
+                        currentUser.getLatitude()
+                ).stream()
                 .map(person -> {
                     // 각 상대방의 main 강아지 탐색
                     Dog mainDog = dogService.findByPersonAndMain(person);

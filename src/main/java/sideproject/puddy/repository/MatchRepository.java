@@ -1,7 +1,5 @@
 package sideproject.puddy.repository;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,14 +21,14 @@ boolean existsBySenderAndReceiver(Person sender, Person receiver);
             "WHERE m.receiver.id = p.id " +
             "AND m.sender.id = :currentUserId) " +
             "AND FUNCTION('ST_DISTANCE_SPHERE', FUNCTION('POINT', p.longitude, p.latitude), FUNCTION('POINT', :searchLongitude, :searchLatitude)) <= 3000" +
-            "ORDER BY RAND()"
+            "ORDER BY RAND()" +
+            "LIMIT 10"
     )
-    Page<Person> findNearPersonNotMatched(
+    List<Person> findNearPersonNotMatched(
             @Param("currentUserId") Long currentUserId,
             @Param("gender") boolean gender,
             @Param("searchLongitude") Double searchLongitude,
-            @Param("searchLatitude") Double searchLatitude,
-            Pageable pageable
+            @Param("searchLatitude") Double searchLatitude
     );
 
     List<Match> findByReceiverId(Long id);

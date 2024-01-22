@@ -17,9 +17,8 @@ public class MatchController {
     private final MatchService matchService;
 
     @GetMapping("/random")
-    public ResponseEntity<RandomDogDetailListResponse> findMatches(@RequestParam int pageNum){
-        RandomDogDetailListResponse matchSearchResponse = matchService.getMatchingByDog(pageNum);
-        return ResponseEntity.ok(matchSearchResponse);
+    public ResponseEntity<RandomDogDetailListResponse> findMatches(){
+        return ResponseEntity.ok(matchService.getMatchingByDog());
     }
 
     @GetMapping("/random/{personId}")
