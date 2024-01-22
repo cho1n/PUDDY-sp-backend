@@ -10,6 +10,7 @@ import sideproject.puddy.dto.tag.TagDto;
 import sideproject.puddy.exception.CustomException;
 import sideproject.puddy.exception.ErrorCode;
 import sideproject.puddy.model.*;
+import sideproject.puddy.repository.ChatRepository;
 import sideproject.puddy.repository.MatchRepository;
 import sideproject.puddy.repository.PersonRepository;
 import sideproject.puddy.security.util.SecurityUtil;
@@ -28,6 +29,7 @@ public class MatchService {
 
     private final MatchRepository matchRepository;
     private final PersonRepository personRepository;
+    private final ChatRepository chatRepository;
     private final AuthService authService;
     private final DogService dogService;
 
@@ -132,12 +134,16 @@ public class MatchService {
         @Transactional
     public void likeProfile(Long receiverId) {
         Person sender = authService.findById(SecurityUtil.getCurrentUserId());
-        Person receiver = personRepository.findById(receiverId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
+        Person receiver = authService.findById(receiverId);
         // 이미 매치된 경우에는 중복 생성하지 않도록 체크
-        if (!matchRepository.existsBySenderAndReceiver(sender, receiver))
+        if (!matchRepository.existsBySenderAndReceiver(sender, receiver)) {
             matchRepository.save(new Match(sender, receiver));
+            if (matchRepository.existsBySenderAndReceiver(receiver, sender)){
+                matchRepository.delete(findBySenderAndReceiver(sender, receiver));
+                matchRepository.delete(findBySenderAndReceiver(receiver, sender));
+                chatRepository.save(new Chat(receiver, sender));
+            }
+        }
     }
 
     private List<TagDto> mapTagsToDto(List<DogTagMap> dogTagMaps) {
@@ -164,6 +170,9 @@ public class MatchService {
                         mapTagsToDto(mainDog.getDogTagMaps())
                 )
         );
+    }
+    public Match findBySenderAndReceiver(Person sender, Person receiver){
+        return matchRepository.findBySenderAndReceiver(sender, receiver).orElseThrow(() -> new CustomException(ErrorCode.MATCH_NOT_FOUND));
     }
 
 }

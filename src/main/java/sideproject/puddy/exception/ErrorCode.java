@@ -18,6 +18,7 @@
         TRAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 산책로입니다."),
         REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 리뷰입니다."),
         TAG_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 태그입니다"),
+        MATCH_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 매치입니다"),
         ;
 
         private final HttpStatus httpStatus;
