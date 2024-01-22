@@ -4,6 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record DogMyPageResponse (
+        Long id,
 
         String name,
         Integer age,
@@ -12,9 +13,10 @@ public record DogMyPageResponse (
         String image
 ) {
     public static DogMyPageResponse of (
-            String name, Integer age, String type, boolean main, String image
+            Long id, String name, Integer age, String type, boolean main, String image
     ) {
         return DogMyPageResponse.builder()
+                .id(id)
                 .name(name)
                 .age(age)
                 .type(type)

@@ -87,6 +87,7 @@ public class DogService {
     public List<DogMyPageResponse> getDogMyPage(Person person) {
         return dogRepository.findAllByPerson(person).stream()
                 .map(dog -> DogMyPageResponse.of(
+                        dog.getId(),
                         dog.getName(),
                         calcAge(dog.getBirth().getYear()),
                         dog.getDogType().getContent(),
