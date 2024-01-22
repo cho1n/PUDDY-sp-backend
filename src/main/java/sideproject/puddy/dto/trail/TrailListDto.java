@@ -9,5 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 public class TrailListDto {
     private List<TrailDto> trails;
-
+    private double myLat;
+    private double myLong;
+    private String myMainAddress;
 }
