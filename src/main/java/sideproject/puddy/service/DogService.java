@@ -50,8 +50,19 @@ public class DogService {
     }
     @Transactional
     public ResponseEntity<String> deleteDog(Long id){
+        Person person = authService.findById(SecurityUtil.getCurrentUserId());
+        if (person.getDogs().stream().count() <= 1){
+            throw new CustomException(ErrorCode.DOG_NUM_NOT_FOUND);
+        }
         Dog dog = findByPersonAndId(id);
-        dogRepository.delete(dog);
+        if (dog.isMain()){
+            dogRepository.delete(dog);
+            Dog firstDog = dogRepository.findFirstByPerson(person).orElseThrow(() -> new CustomException(ErrorCode.DOG_NUM_NOT_FOUND));
+            firstDog.updateMainDog(true);
+        }
+        else{
+            dogRepository.delete(dog);
+        }
         return ResponseEntity.ok().body("ok");
     }
     @Transactional

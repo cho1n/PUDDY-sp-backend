@@ -13,6 +13,7 @@ public interface DogRepository extends JpaRepository<Dog, Long> {
     List<Dog> findAllByPerson(Person person);
     Optional<Dog> findByPersonAndMain(Person person, boolean main);
     Optional<Dog> findByPersonAndId(Person person, Long id);
+    Optional<Dog> findFirstByPerson(Person person);
     boolean existsByPerson(Person person);
     boolean existsByPersonAndMain(Person person, boolean main);
 }
