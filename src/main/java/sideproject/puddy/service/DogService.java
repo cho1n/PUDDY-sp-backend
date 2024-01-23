@@ -15,7 +15,7 @@ import sideproject.puddy.exception.CustomException;
 import sideproject.puddy.exception.ErrorCode;
 import sideproject.puddy.model.Dog;
 import sideproject.puddy.model.Person;
-import sideproject.puddy.repository.DogRepository;
+import sideproject.puddy.repository.jpa.DogRepository;
 import sideproject.puddy.security.util.SecurityUtil;
 
 import java.time.LocalDate;
@@ -51,7 +51,7 @@ public class DogService {
     @Transactional
     public ResponseEntity<String> deleteDog(Long id){
         Person person = authService.findById(SecurityUtil.getCurrentUserId());
-        if (person.getDogs().stream().count() <= 1){
+        if ((long) person.getDogs().size() <= 1){
             throw new CustomException(ErrorCode.DOG_NUM_NOT_FOUND);
         }
         Dog dog = findByPersonAndId(id);

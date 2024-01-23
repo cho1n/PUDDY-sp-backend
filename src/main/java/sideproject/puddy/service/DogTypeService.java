@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import sideproject.puddy.dto.type.TypeDto;
 import sideproject.puddy.dto.type.TypeListDto;
 import sideproject.puddy.model.DogType;
-import sideproject.puddy.repository.DogTypeRepository;
+import sideproject.puddy.repository.jpa.DogTypeRepository;
 
 @Service
 @Slf4j

@@ -7,7 +7,7 @@ import sideproject.puddy.dto.trail.TrailDto;
 import sideproject.puddy.dto.trail.TrailListDto;
 import sideproject.puddy.model.Person;
 import sideproject.puddy.model.Trail;
-import sideproject.puddy.repository.TrailRepository;
+import sideproject.puddy.repository.jpa.TrailRepository;
 import sideproject.puddy.security.util.SecurityUtil;
 import java.util.ArrayList;
 import java.util.List;

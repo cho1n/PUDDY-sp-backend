@@ -1,4 +1,4 @@
-package sideproject.puddy.repository;
+package sideproject.puddy.repository.jpa;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -11,5 +11,4 @@ import java.util.List;
 @Repository
 public interface DogTagMapRepository extends JpaRepository<DogTagMap, Long> {
     List<DogTagMap> findAllByDog(Dog dog);
-    List<DogTagMap> findAllByDogTag(DogTag dogTag);
 }

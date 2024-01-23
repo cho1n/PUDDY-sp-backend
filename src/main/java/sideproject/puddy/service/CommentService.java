@@ -13,7 +13,7 @@ import sideproject.puddy.exception.ErrorCode;
 import sideproject.puddy.model.Comment;
 import sideproject.puddy.model.Person;
 import sideproject.puddy.model.Post;
-import sideproject.puddy.repository.CommentRepository;
+import sideproject.puddy.repository.jpa.CommentRepository;
 import sideproject.puddy.security.util.SecurityUtil;
 
 import java.util.List;

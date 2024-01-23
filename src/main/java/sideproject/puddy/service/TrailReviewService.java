@@ -14,7 +14,7 @@ import sideproject.puddy.exception.ErrorCode;
 import sideproject.puddy.model.Person;
 import sideproject.puddy.model.Trail;
 import sideproject.puddy.model.TrailReview;
-import sideproject.puddy.repository.TrailReviewRepository;
+import sideproject.puddy.repository.jpa.TrailReviewRepository;
 import sideproject.puddy.security.util.SecurityUtil;
 
 import java.util.List;

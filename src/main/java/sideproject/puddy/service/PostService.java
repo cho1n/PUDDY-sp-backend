@@ -15,8 +15,8 @@ import sideproject.puddy.exception.ErrorCode;
 import sideproject.puddy.model.Person;
 import sideproject.puddy.model.Post;
 import sideproject.puddy.model.PostLike;
-import sideproject.puddy.repository.PostLikeRepository;
-import sideproject.puddy.repository.PostRepository;
+import sideproject.puddy.repository.jpa.PostLikeRepository;
+import sideproject.puddy.repository.jpa.PostRepository;
 import sideproject.puddy.security.util.SecurityUtil;
 
 import java.util.List;

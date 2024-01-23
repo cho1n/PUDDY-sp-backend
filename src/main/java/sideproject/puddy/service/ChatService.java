@@ -7,7 +7,7 @@ import sideproject.puddy.dto.chat.response.ChatDogDto;
 import sideproject.puddy.dto.chat.response.ChatDto;
 import sideproject.puddy.dto.chat.response.GetChatListResonse;
 import sideproject.puddy.model.Person;
-import sideproject.puddy.repository.ChatRepository;
+import sideproject.puddy.repository.jpa.ChatRepository;
 import sideproject.puddy.security.util.SecurityUtil;
 
 import java.util.ArrayList;

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import sideproject.puddy.exception.CustomException;
 import sideproject.puddy.exception.ErrorCode;
 import sideproject.puddy.model.Person;
-import sideproject.puddy.repository.PersonRepository;
+import sideproject.puddy.repository.jpa.PersonRepository;
 import sideproject.puddy.security.CustomUserDetails;
 
 @Slf4j

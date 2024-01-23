@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import sideproject.puddy.dto.tag.TagDto;
 import sideproject.puddy.model.Dog;
 import sideproject.puddy.model.DogTagMap;
-import sideproject.puddy.repository.DogTagMapRepository;
+import sideproject.puddy.repository.jpa.DogTagMapRepository;
 
 import java.util.List;
 

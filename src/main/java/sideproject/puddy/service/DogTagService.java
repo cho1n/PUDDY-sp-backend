@@ -8,7 +8,7 @@ import sideproject.puddy.dto.tag.TagListDto;
 import sideproject.puddy.exception.CustomException;
 import sideproject.puddy.exception.ErrorCode;
 import sideproject.puddy.model.DogTag;
-import sideproject.puddy.repository.DogTagRepository;
+import sideproject.puddy.repository.jpa.DogTagRepository;
 
 
 @Service

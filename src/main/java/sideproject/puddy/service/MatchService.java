@@ -10,9 +10,9 @@ import sideproject.puddy.dto.tag.TagDto;
 import sideproject.puddy.exception.CustomException;
 import sideproject.puddy.exception.ErrorCode;
 import sideproject.puddy.model.*;
-import sideproject.puddy.repository.ChatRepository;
-import sideproject.puddy.repository.MatchRepository;
-import sideproject.puddy.repository.PersonRepository;
+import sideproject.puddy.repository.jpa.ChatRepository;
+import sideproject.puddy.repository.jpa.MatchRepository;
+import sideproject.puddy.repository.jpa.PersonRepository;
 import sideproject.puddy.security.util.SecurityUtil;
 
 
