@@ -53,19 +53,15 @@ public class DogService {
     @Transactional
     public ResponseEntity<String> deleteDog(Long id){
         Person person = authService.findById(SecurityUtil.getCurrentUserId());
-        if (person.getDogs().stream().count() <= 1){
+        if (dogRepository.findAllByPerson(person).size() <= 1){
             throw new CustomException(ErrorCode.DOG_NUM_NOT_FOUND);
         }
-        Dog dog = dogRepository.findByPersonAndId(person, id)
+        Dog dog = dogRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.DOG_NUM_NOT_FOUND));
-        if (dog.isMain()) {
-            dogRepository.deleteById(dog.getId());
-            Dog firstDog = dogRepository.findFirstByPerson(person)
-                    .orElseThrow(() -> new CustomException(ErrorCode.DOG_NUM_NOT_FOUND));
-            log.info("firstDog: {}", firstDog);
+        dogRepository.delete(dog);
+        if (!dogRepository.existsByPersonAndMain(person, true)){
+            Dog firstDog = dogRepository.findFirstByPerson(person).orElseThrow(() -> new CustomException(ErrorCode.DOG_NUM_NOT_FOUND));
             firstDog.updateMainDog(true);
-        } else {
-            dogRepository.deleteById(dog.getId());
         }
         return ResponseEntity.ok().body("ok");
     }
