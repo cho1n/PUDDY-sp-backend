@@ -42,7 +42,9 @@ public class DogService {
     }
     @Transactional
     public ResponseEntity<String> updateDog(Long id, UpdateDogRequest request){
-        Dog dog = findByPersonAndId(id);
+        Person person = authService.findById(SecurityUtil.getCurrentUserId());
+        Dog dog = dogRepository.findByPersonAndId(person, id)
+                .orElseThrow(() -> new CustomException(ErrorCode.DOG_NUM_NOT_FOUND));
         dog.updateDog(request.getImage(), dogTypeService.findByContent(request.getType()), request.isGender(), request.isNeuter());
         dogTagMapService.deleteAllTags(dog);
         dogTagMapService.saveAllTags(request.getTags(), dog);
@@ -54,34 +56,36 @@ public class DogService {
         if (person.getDogs().stream().count() <= 1){
             throw new CustomException(ErrorCode.DOG_NUM_NOT_FOUND);
         }
-        Dog dog = findByPersonAndId(id);
-        if (dog.isMain()){
-            dogRepository.delete(dog);
-            Dog firstDog = dogRepository.findFirstByPerson(person).orElseThrow(() -> new CustomException(ErrorCode.DOG_NUM_NOT_FOUND));
+        Dog dog = dogRepository.findByPersonAndId(person, id)
+                .orElseThrow(() -> new CustomException(ErrorCode.DOG_NUM_NOT_FOUND));
+        if (dog.isMain()) {
+            dogRepository.deleteById(dog.getId());
+            Dog firstDog = dogRepository.findFirstByPerson(person)
+                    .orElseThrow(() -> new CustomException(ErrorCode.DOG_NUM_NOT_FOUND));
+            log.info("firstDog: {}", firstDog);
             firstDog.updateMainDog(true);
-        }
-        else{
-            dogRepository.delete(dog);
+        } else {
+            dogRepository.deleteById(dog.getId());
         }
         return ResponseEntity.ok().body("ok");
     }
     @Transactional
     public ResponseEntity<String> updateMainDog(Long id){
         Person person = authService.findById(SecurityUtil.getCurrentUserId());
-        Dog dog = findByPersonAndId(id);
+        Dog dog = dogRepository.findByPersonAndId(person, id)
+                .orElseThrow(() -> new CustomException(ErrorCode.DOG_NUM_NOT_FOUND));
         dogRepository.findAllByPerson(person).forEach(dogs -> dogs.updateMainDog(false));
         dog.updateMainDog(true);
         return ResponseEntity.ok().body("ok");
     }
-    public DogDetailResponse findDog(Long id){
-        Dog dog = findByPersonAndId(id);
+    public DogDetailResponse findDog(Long id) {
+        Person person = authService.findById(SecurityUtil.getCurrentUserId());
+        Dog dog = dogRepository.findByPersonAndId(person, id)
+                .orElseThrow(() -> new CustomException(ErrorCode.DOG_NUM_NOT_FOUND));
         List<TagDto> tags = dog.getDogTagMaps().stream().map(dogTagMap -> new TagDto(dogTagMap.getDogTag().getContent())).toList();
         return new DogDetailResponse(dog.getImage(), dog.isGender(), dog.getDogType().getContent(), dog.isNeuter(), tags);
     }
-    public Dog findByPersonAndId(Long id){
-        Person person = authService.findById(SecurityUtil.getCurrentUserId());
-        return dogRepository.findByPersonAndId(person, id).orElseThrow(() -> new CustomException(ErrorCode.DOG_NUM_NOT_FOUND));
-    }
+
     public DogProfileDto findProfileByPersonAndMain(Person person){
         if (!dogRepository.existsByPersonAndMain(person, true)){
             return null;
