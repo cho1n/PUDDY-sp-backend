@@ -79,7 +79,7 @@ public class DogService {
         Dog dog = dogRepository.findByPersonAndId(person, id)
                 .orElseThrow(() -> new CustomException(ErrorCode.DOG_NUM_NOT_FOUND));
         List<TagDto> tags = dog.getDogTagMaps().stream().map(dogTagMap -> new TagDto(dogTagMap.getDogTag().getContent())).toList();
-        return new DogDetailResponse(dog.getImage(), dog.isGender(), dog.getDogType().getContent(), dog.isNeuter(), tags);
+        return new DogDetailResponse(dog.getName(), dog.getRegisterNum(), dog.getImage(), dog.isGender(), dog.getDogType().getContent(), dog.isNeuter(), tags);
     }
 
     public DogProfileDto findProfileByPersonAndMain(Person person){

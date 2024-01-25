@@ -9,6 +9,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class DogDetailResponse {
+    private String name;
+    private Long registerNum;
     private String image;
     private boolean gender;
     private String type;
