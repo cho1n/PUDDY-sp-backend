@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(access= AccessLevel.PROTECTED)
 public class Match {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @ManyToOne
     @JoinColumn(name = "sender_id")
