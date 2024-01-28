@@ -10,7 +10,6 @@ import sideproject.puddy.model.Person;
 import sideproject.puddy.repository.ChatRepository;
 import sideproject.puddy.security.util.SecurityUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,25 +21,15 @@ public class ChatService {
     private final DogService dogService;
     public GetChatListResonse getChatList(){
         Person person = authService.findById(SecurityUtil.getCurrentUserId());
-        List<ChatDto> chatList = new ArrayList<>();
-        chatRepository.findAllByFirstPerson(person).forEach(chat ->
-                        chatList.add(new ChatDto(
-                                chat.getId(),
-                                chat.getSecondPerson().getId(),
-                                chat.getSecondPerson().isGender(),
-                                new ChatDogDto(
-                                        dogService.findByPersonAndMain(chat.getSecondPerson()).getName(),
-                                        dogService.findByPersonAndMain(chat.getSecondPerson()).getImage()
-                                ))));
-        chatRepository.findAllBySecondPerson(person).forEach(chat ->
-                        chatList.add(new ChatDto(
+        List<ChatDto> chatList = chatRepository.findAllByFirstPersonOrSecondPerson(person, person).stream().map(chat ->
+                        (new ChatDto(
                                 chat.getId(),
                                 chat.getFirstPerson().getId(),
                                 chat.getFirstPerson().isGender(),
                                 new ChatDogDto(
                                         dogService.findByPersonAndMain(chat.getFirstPerson()).getName(),
                                         dogService.findByPersonAndMain(chat.getFirstPerson()).getImage()
-                                ))));
+                                )))).toList();
         return new GetChatListResonse(chatList);
     }
 }

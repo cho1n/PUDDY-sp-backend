@@ -9,8 +9,7 @@ import java.util.List;
 
 @Repository
 public interface ChatRepository extends JpaRepository<Chat, Long> {
-    List<Chat> findAllByFirstPerson(Person firstPerson);
-    List<Chat> findAllBySecondPerson(Person secondPerson);
-boolean existsByFirstPersonAndSecondPerson(Person firstPerson, Person secondPerson);
+    List<Chat> findAllByFirstPersonOrSecondPerson(Person firstPerson, Person secondPerson);
+    boolean existsByFirstPersonAndSecondPerson(Person firstPerson, Person secondPerson);
 
 }
