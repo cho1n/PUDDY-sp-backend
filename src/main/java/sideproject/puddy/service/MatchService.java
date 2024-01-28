@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,8 +48,9 @@ public class MatchService {
                 .map(person -> {
                     // 각 상대방의 main 강아지 탐색
                     Dog mainDog = dogService.findByPersonAndMain(person);
+                    if((!chatRepository.existsByFirstPersonAndSecondPerson(person, currentUser) && !chatRepository.existsByFirstPersonAndSecondPerson(currentUser, person)) && !matchRepository.existsBySenderAndReceiver(currentUser, person)){
 
-                    RandomDogProfileDto randomDogProfileDto = new RandomDogProfileDto(
+                        RandomDogProfileDto randomDogProfileDto = new RandomDogProfileDto(
                             mainDog.getName(),
                             mainDog.isGender(),
                             mainDog.getImage(),
@@ -56,7 +58,6 @@ public class MatchService {
                             calculateAge(mainDog.getBirth()),
                             mapTagsToDto(mainDog.getDogTagMaps())
                     );
-
                     return new RandomDogDetailResponse(
                             person.getId(),
                             person.getLogin(),
@@ -65,7 +66,10 @@ public class MatchService {
                             person.getMainAddress(),
                             randomDogProfileDto
                     );
+                }
+                    return null;
                 })
+                .filter(Objects::nonNull)
                 .toList();
         return new RandomDogDetailListResponse(dogs);
     }
@@ -77,7 +81,7 @@ public class MatchService {
         List<MatchPersonProfileDto> matchPersonProfileDtoList = matches
                 .stream()
                 .map(match -> {
-                    Long personId = match.getId();
+                    Long personId = match.getSender().getId();
                     Person person = authService.findById(personId);
                     Dog mainDog = dogService.findByPersonAndMain(person);
 

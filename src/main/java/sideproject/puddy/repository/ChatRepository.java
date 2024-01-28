@@ -11,4 +11,6 @@ import java.util.List;
 public interface ChatRepository extends JpaRepository<Chat, Long> {
     List<Chat> findAllByFirstPerson(Person firstPerson);
     List<Chat> findAllBySecondPerson(Person secondPerson);
+boolean existsByFirstPersonAndSecondPerson(Person firstPerson, Person secondPerson);
+
 }
