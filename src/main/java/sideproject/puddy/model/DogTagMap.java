@@ -5,11 +5,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.swing.text.html.HTML;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
