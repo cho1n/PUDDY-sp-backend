@@ -41,6 +41,9 @@ public class CommentService {
         Post post = postService.getPost(postId);
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+        if(!comment.getPerson().equals(authService.findById(SecurityUtil.getCurrentUserId()))) {
+            throw new CustomException(ErrorCode.NOT_SAME_PERSON);
+        }
         comment.updateComment(commentRequest.getContent());
         return ResponseEntity.ok().body("ok");
     }
@@ -50,6 +53,9 @@ public class CommentService {
         Post post = postService.getPost(postId);
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+        if(!comment.getPerson().equals(authService.findById(SecurityUtil.getCurrentUserId()))) {
+            throw new CustomException(ErrorCode.NOT_SAME_PERSON);
+        }
         commentRepository.delete(comment);
 
         return ResponseEntity.ok().body("ok");
@@ -59,6 +65,7 @@ public class CommentService {
 
         return post.getComments().stream()
                 .map(comment -> CommentDto.builder()
+                        .id(comment.getId())
                         .person(new PersonProfileDto(comment.getPerson().isGender(), dogService.findProfileByPersonAndMain(comment.getPerson())))
                         .content(comment.getContent())
                         .createdAt(comment.getCreatedAt().toString())

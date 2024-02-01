@@ -19,6 +19,7 @@
         REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 리뷰입니다."),
         TAG_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 태그입니다"),
         MATCH_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 매치입니다"),
+        NOT_SAME_PERSON(HttpStatus.FORBIDDEN, "작성자와 사용자가 일치하지 않습니다.")
         ;
 
         private final HttpStatus httpStatus;
