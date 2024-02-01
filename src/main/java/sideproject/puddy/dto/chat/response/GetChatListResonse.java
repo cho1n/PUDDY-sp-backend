@@ -8,5 +8,5 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class GetChatListResonse {
-    private List<ChatDto> persons;
+    private List<ChatResponse> persons;
 }

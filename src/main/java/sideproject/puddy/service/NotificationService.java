@@ -23,9 +23,9 @@ public class NotificationService {
             log.info(e.toString());
         }
         NotificationController.sseEmitters.put(userId, sseEmitter);
-        sseEmitter.onCompletion(() -> NotificationController.sseEmitters.remove(userId));	// sseEmitter 연결이 완료될 경우
-        sseEmitter.onTimeout(() -> NotificationController.sseEmitters.remove(userId));		// sseEmitter 연결에 타임아웃이 발생할 경우
-        sseEmitter.onError((e) -> NotificationController.sseEmitters.remove(userId));		// sseEmitter 연결에 오류가 발생할 경우
+        sseEmitter.onCompletion(() -> NotificationController.sseEmitters.remove(userId));
+        sseEmitter.onTimeout(() -> NotificationController.sseEmitters.remove(userId));
+        sseEmitter.onError((e) -> NotificationController.sseEmitters.remove(userId));
 
         return sseEmitter;
     }

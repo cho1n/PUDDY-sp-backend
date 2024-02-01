@@ -18,8 +18,7 @@ import sideproject.puddy.dto.token.TokenDto;
 import sideproject.puddy.exception.CustomException;
 import sideproject.puddy.exception.ErrorCode;
 import sideproject.puddy.model.Person;
-import sideproject.puddy.model.RefreshToken;
-import sideproject.puddy.repository.jpa.PersonRepository;
+import sideproject.puddy.repository.PersonRepository;
 import sideproject.puddy.security.jwt.JwtTokenProvider;
 import sideproject.puddy.security.util.SecurityUtil;
 
@@ -77,8 +76,8 @@ public class AuthService {
         }
         Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
         Person person = findById(Long.valueOf(authentication.getName()));
-        RefreshToken token = refreshTokenService.findByPersonId(person.getId());
-        if (!token.getToken().equals(refreshToken)){
+        String token = refreshTokenService.findByPersonId(person.getId());
+        if (!token.equals(refreshToken)){
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
         TokenDto tokens = jwtTokenProvider.generateToken(authentication);

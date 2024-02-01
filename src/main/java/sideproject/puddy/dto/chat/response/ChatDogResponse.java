@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ChatDogDto {
+public class ChatDogResponse {
     private String name;
     private String image;
 }

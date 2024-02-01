@@ -21,6 +21,7 @@
         MATCH_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 매치입니다"),
         INVALID_LOGIN(HttpStatus.BAD_REQUEST, "중복 로그인입니다"),
         INVALID_SIGNUP(HttpStatus.BAD_REQUEST, "잘못된 값이 존재합니다"),
+        CHAT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 채팅방입니다"),
         ;
 
         private final HttpStatus httpStatus;

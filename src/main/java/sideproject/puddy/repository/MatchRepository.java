@@ -1,4 +1,4 @@
-package sideproject.puddy.repository.jpa;
+package sideproject.puddy.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

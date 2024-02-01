@@ -15,7 +15,7 @@ import sideproject.puddy.exception.CustomException;
 import sideproject.puddy.exception.ErrorCode;
 import sideproject.puddy.model.Dog;
 import sideproject.puddy.model.Person;
-import sideproject.puddy.repository.jpa.DogRepository;
+import sideproject.puddy.repository.DogRepository;
 import sideproject.puddy.security.util.SecurityUtil;
 
 import java.time.LocalDate;

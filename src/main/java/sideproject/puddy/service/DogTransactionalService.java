@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import sideproject.puddy.dto.dog.request.PostDogRequest;
 import sideproject.puddy.model.Dog;
 import sideproject.puddy.model.Person;
-import sideproject.puddy.repository.jpa.DogRepository;
+import sideproject.puddy.repository.DogRepository;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

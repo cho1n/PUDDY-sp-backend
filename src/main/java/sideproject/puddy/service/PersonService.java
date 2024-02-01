@@ -12,7 +12,7 @@ import sideproject.puddy.dto.person.request.UpdatePersonRequest;
 import sideproject.puddy.dto.person.response.MyPageInfoResponse;
 import sideproject.puddy.dto.person.response.PersonInfoResponse;
 import sideproject.puddy.model.Person;
-import sideproject.puddy.repository.jpa.PersonRepository;
+import sideproject.puddy.repository.PersonRepository;
 import sideproject.puddy.security.util.SecurityUtil;
 
 import java.util.List;

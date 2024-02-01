@@ -3,7 +3,7 @@ package sideproject.puddy.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import sideproject.puddy.repository.jpa.RegisterNumberRepository;
+import sideproject.puddy.repository.RegisterNumberRepository;
 
 @Service
 @Slf4j
