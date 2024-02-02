@@ -19,5 +19,6 @@ public class PostDetailResponse {
     private boolean isLike;
     private Integer likeCount;
     private List<CommentDto> comments;
+    @JsonProperty("isMine")
     private boolean isMine;
 }

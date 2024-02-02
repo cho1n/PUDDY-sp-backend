@@ -1,5 +1,6 @@
 package sideproject.puddy.dto.comment.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 import sideproject.puddy.dto.person.response.PersonProfileDto;
@@ -11,5 +12,6 @@ public class CommentDto {
     private PersonProfileDto person;
     private String content;
     private String createdAt;
+    @JsonProperty("isMine")
     private boolean isMine;
 }
