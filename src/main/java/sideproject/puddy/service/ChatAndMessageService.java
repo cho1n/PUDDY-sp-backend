@@ -33,7 +33,7 @@ public class ChatAndMessageService {
             Dog dog = dogService.findByPersonAndMain(person);
             List<MessageDto> messages = messageService.loadMessage(chatId);
             ChatDetailResponse chatDetailResponse = new ChatDetailResponse(
-                    chatId, currentUserId, new ChatPerson(person.isGender(), new ChatDogResponse(dog.getName(), dog.getImage())), messages
+                    chatId, currentUserId, new ChatPerson(person.getId(), person.isGender(), new ChatDogResponse(dog.getName(), dog.getImage())), messages
             );
             return ResponseEntity.ok().body(chatDetailResponse);
         }

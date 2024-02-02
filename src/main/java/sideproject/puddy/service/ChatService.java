@@ -11,8 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import sideproject.puddy.dto.chat.ChatDto;
 import sideproject.puddy.dto.chat.response.ChatDogResponse;
+import sideproject.puddy.dto.chat.response.ChatPerson;
 import sideproject.puddy.dto.chat.response.ChatResponse;
-import sideproject.puddy.dto.chat.response.GetChatListResonse;
+import sideproject.puddy.dto.chat.response.GetChatListResponse;
 import sideproject.puddy.exception.CustomException;
 import sideproject.puddy.exception.ErrorCode;
 import sideproject.puddy.model.Chat;
@@ -42,25 +43,23 @@ public class ChatService {
         topics = new HashMap<>();
     }
 
-    public GetChatListResonse getChatList(){
+    public GetChatListResponse getChatList(){
         Person person = authService.findById(SecurityUtil.getCurrentUserId());
         List<ChatResponse> chatList = chatRepository.findAllByFirstPersonOrSecondPersonOrderByCreatedAt(person, person).stream().map(chat ->
                         findChat(person, chat)).toList();
-        return new GetChatListResonse(chatList);
+        return new GetChatListResponse(chatList);
     }
     private ChatResponse findChat(Person person, Chat chat){
-        if (chat.getFirstPerson() == person){
-            return new ChatResponse(chat.getId(), chat.getSecondPerson().getId(), chat.getSecondPerson().isGender(),
-                    new ChatDogResponse(
-                            dogService.findByPersonAndMain(chat.getSecondPerson()).getName(),
-                            dogService.findByPersonAndMain(chat.getSecondPerson()).getImage()
-                    ));
+        Person receiver = (person == chat.getSecondPerson() ? chat.getFirstPerson() : chat.getSecondPerson());
+        return findNull(receiver, chat);
+    }
+    private ChatResponse findNull(Person person, Chat chat){
+        if (person != null) {
+            return new ChatResponse(chat.getId(), new ChatPerson(person.getId(), person.isGender(),
+                    new ChatDogResponse(dogService.findByPersonAndMain(person).getName(),
+                            dogService.findByPersonAndMain(person).getImage())));
         } else {
-            return new ChatResponse(chat.getId(), chat.getFirstPerson().getId(), chat.getFirstPerson().isGender(),
-                    new ChatDogResponse(
-                            dogService.findByPersonAndMain(chat.getFirstPerson()).getName(),
-                            dogService.findByPersonAndMain(chat.getFirstPerson()).getImage()
-                    ));
+            return new ChatResponse(chat.getId(), null);
         }
     }
 
@@ -89,7 +88,7 @@ public class ChatService {
         if (chat.getFirstPerson() == null && chat.getSecondPerson() == null){
             chatRepository.delete(chat);
             opsHashMessageRoom.delete("MESSAGE_ROOM", chatId.toString());
-            topics.remove(chatId, getTopic(chatId.toString()));
+            topics.remove(chatId.toString(), getTopic(chatId.toString()));
         }
         return ResponseEntity.ok().body("ok");
     }

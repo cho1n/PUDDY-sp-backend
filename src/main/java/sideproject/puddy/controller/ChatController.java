@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sideproject.puddy.dto.chat.response.ChatDetailResponse;
-import sideproject.puddy.dto.chat.response.GetChatListResonse;
+import sideproject.puddy.dto.chat.response.GetChatListResponse;
 import sideproject.puddy.service.ChatAndMessageService;
 import sideproject.puddy.service.ChatService;
 
@@ -17,7 +17,7 @@ public class ChatController {
     private final ChatService chatService;
     private final ChatAndMessageService chatAndMessageService;
     @GetMapping("/chat")
-    public GetChatListResonse getChatList(){
+    public GetChatListResponse getChatList(){
         return chatService.getChatList();
     }
     @GetMapping("/chat/{chatId}")
