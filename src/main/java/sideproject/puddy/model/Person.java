@@ -40,10 +40,7 @@ public class Person {
     private List<Match> matches = new ArrayList<>();
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Match> matched = new ArrayList<>();
-    @OneToMany(mappedBy = "firstPerson", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Chat> chats = new ArrayList<>();
-    @OneToMany(mappedBy = "secondPerson", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Chat> chated = new ArrayList<>();
+
     public Person(String login, String password, String mainAddress, String subAddress, LocalDate birth, boolean gender, Double latitude, Double longitude) {
         this.login = login;
         this.password = password;

@@ -22,7 +22,6 @@ public class MessageController {
     @MessageMapping("/message")
     public ResponseEntity<String> message(PostMessageRequest postMessageRequest) {
         messageService.onMessage(postMessageRequest);
-        messageService.saveMessage(postMessageRequest);
         return ResponseEntity.ok().body("ok");
     }
     @GetMapping("/api/chat/{chatId}/message")

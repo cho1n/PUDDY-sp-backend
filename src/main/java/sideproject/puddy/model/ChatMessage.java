@@ -14,15 +14,17 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String content;
-    private Long chatId;
+    @ManyToOne
+    @JoinColumn(name = "chat_id")
+    private Chat chat;
     @ManyToOne
     @JoinColumn(name = "sender_id")
     private Person sender;
     private LocalDate createdAt;
 
-    public ChatMessage(Long chatId, Person sender, String content) {
+    public ChatMessage(Chat chat, Person sender, String content) {
         this.content = content;
-        this.chatId = chatId;
+        this.chat = chat;
         this.sender = sender;
         this.createdAt = LocalDate.now();
     }

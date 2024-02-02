@@ -13,6 +13,8 @@ import sideproject.puddy.dto.chat.ChatDto;
 import sideproject.puddy.dto.chat.response.ChatDogResponse;
 import sideproject.puddy.dto.chat.response.ChatResponse;
 import sideproject.puddy.dto.chat.response.GetChatListResonse;
+import sideproject.puddy.exception.CustomException;
+import sideproject.puddy.exception.ErrorCode;
 import sideproject.puddy.model.Chat;
 import sideproject.puddy.model.Person;
 import sideproject.puddy.redis.RedisSubscriber;
@@ -43,15 +45,23 @@ public class ChatService {
     public GetChatListResonse getChatList(){
         Person person = authService.findById(SecurityUtil.getCurrentUserId());
         List<ChatResponse> chatList = chatRepository.findAllByFirstPersonOrSecondPersonOrderByCreatedAt(person, person).stream().map(chat ->
-                        new ChatResponse(
-                                chat.getId(),
-                                chat.getSecondPerson().getId(),
-                                chat.getSecondPerson().isGender(),
-                                new ChatDogResponse(
-                                        dogService.findByPersonAndMain(chat.getSecondPerson()).getName(),
-                                        dogService.findByPersonAndMain(chat.getSecondPerson()).getImage()
-                                ))).toList();
+                        findChat(person, chat)).toList();
         return new GetChatListResonse(chatList);
+    }
+    private ChatResponse findChat(Person person, Chat chat){
+        if (chat.getFirstPerson() == person){
+            return new ChatResponse(chat.getId(), chat.getSecondPerson().getId(), chat.getSecondPerson().isGender(),
+                    new ChatDogResponse(
+                            dogService.findByPersonAndMain(chat.getSecondPerson()).getName(),
+                            dogService.findByPersonAndMain(chat.getSecondPerson()).getImage()
+                    ));
+        } else {
+            return new ChatResponse(chat.getId(), chat.getFirstPerson().getId(), chat.getFirstPerson().isGender(),
+                    new ChatDogResponse(
+                            dogService.findByPersonAndMain(chat.getFirstPerson()).getName(),
+                            dogService.findByPersonAndMain(chat.getFirstPerson()).getImage()
+                    ));
+        }
     }
 
     @Transactional
@@ -71,7 +81,22 @@ public class ChatService {
         }
         return ResponseEntity.ok().body("ok");
     }
+    @Transactional
+    public ResponseEntity<String> deleteChat(Long chatId){
+        Person person = authService.findById(SecurityUtil.getCurrentUserId());
+        Chat chat = findById(chatId);
+        chat.deletePerson(person);
+        if (chat.getFirstPerson() == null && chat.getSecondPerson() == null){
+            chatRepository.delete(chat);
+            opsHashMessageRoom.delete("MESSAGE_ROOM", chatId.toString());
+            topics.remove(chatId, getTopic(chatId.toString()));
+        }
+        return ResponseEntity.ok().body("ok");
+    }
     public ChannelTopic getTopic(String roomId) {
         return topics.get(roomId);
+    }
+    public Chat findById(Long chatId){
+        return chatRepository.findById(chatId).orElseThrow(() -> new CustomException(ErrorCode.CHAT_NOT_FOUND));
     }
 }
