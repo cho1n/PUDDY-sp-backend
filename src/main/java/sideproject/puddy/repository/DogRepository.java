@@ -1,5 +1,6 @@
 package sideproject.puddy.repository;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import sideproject.puddy.model.Dog;
@@ -16,4 +17,7 @@ public interface DogRepository extends JpaRepository<Dog, Long> {
     Optional<Dog> findFirstByPerson(Person person);
     boolean existsByPerson(Person person);
     boolean existsByPersonAndMain(Person person, boolean main);
+
+    @EntityGraph(attributePaths = {"dogTagMaps"})
+    void deleteById(Long id);
 }

@@ -1,5 +1,6 @@
 package sideproject.puddy.controller;
 
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -7,8 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import sideproject.puddy.dto.match.MatchSearchResponse;
 import sideproject.puddy.dto.match.RandomDogDetailListResponse;
 import sideproject.puddy.dto.match.RandomDogDetailResponse;
+import sideproject.puddy.dto.tag.TagDto;
+import sideproject.puddy.dto.tag.TagListDto;
 import sideproject.puddy.service.MatchService;
 import sideproject.puddy.service.NotificationService;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -19,9 +24,17 @@ public class MatchController {
     private final NotificationService notificationService;
 
     @GetMapping("/random")
-    public ResponseEntity<RandomDogDetailListResponse> findMatches(){
-        return ResponseEntity.ok(matchService.getMatchingByDog());
+    public ResponseEntity<RandomDogDetailListResponse> findMatches(
+            @Nullable @RequestParam(required = false) String type,
+            @RequestParam(required = false) Boolean neuter,
+            @RequestParam(required = false) List<TagDto> tags
+    ){
+        log.info("type: {}, neuter: {}, tags: {}", type, neuter, tags);
+        // type, neuter, tag 파라미터를 사용하여 매칭 도그를 찾는 로직
+        return ResponseEntity.ok(matchService.getMatchingByDog(type, neuter, tags));
     }
+
+
 
     @GetMapping("/random/{personId}")
     public ResponseEntity<RandomDogDetailResponse> findMatchDetailByPerson(@PathVariable Long personId){

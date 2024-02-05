@@ -8,10 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sideproject.puddy.dto.trailreview.request.PostTrailReviewRequest;
 import sideproject.puddy.dto.trailreview.response.TrailReviewListResponse;
-import sideproject.puddy.dto.trailreview.response.TrailReviewResponse;
 import sideproject.puddy.service.TrailReviewService;
 
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -25,7 +23,7 @@ public class TrailReviewController {
     }
     @GetMapping("/review")
     public TrailReviewListResponse getTrailReviewList(@PathVariable Long trailId, @RequestParam int pageNum){
-        PageRequest pageRequest = PageRequest.of(pageNum - 1, 10, Sort.by("createdAt").descending());
+        PageRequest pageRequest = PageRequest.of(pageNum - 1, 6, Sort.by("createdAt").descending());
         return trailReviewService.findAllReviewByTrail(trailId, pageRequest);
     }
     @DeleteMapping("/review/{reviewId}")

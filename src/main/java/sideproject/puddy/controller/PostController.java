@@ -48,7 +48,7 @@ public class PostController {
 
     @GetMapping("/post")
     public ResponseEntity<PostListResponse> pageList(@RequestParam int pageNum){
-        PageRequest pageRequest = PageRequest.of(pageNum - 1, 5, Sort.by("id").reverse());
+        PageRequest pageRequest = PageRequest.of(pageNum - 1, 6, Sort.by("id").reverse());
         return postService.postList(pageRequest);
     }
 }

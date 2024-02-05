@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sideproject.puddy.dto.dog.response.DogProfileDto;
 import sideproject.puddy.dto.match.*;
 import sideproject.puddy.dto.tag.TagDto;
+import sideproject.puddy.dto.tag.TagListDto;
 import sideproject.puddy.exception.CustomException;
 import sideproject.puddy.exception.ErrorCode;
 import sideproject.puddy.model.*;
@@ -18,7 +19,9 @@ import sideproject.puddy.security.util.SecurityUtil;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,40 +37,58 @@ public class MatchService {
 
 
     // 위치, 매칭 여부 -> (성별, 나이, 반려견 정보)
-    public RandomDogDetailListResponse getMatchingByDog() {
+    public RandomDogDetailListResponse getMatchingByDog(String type, Boolean neuter, List<TagDto> tag){
+        // 현재 사용자 찾기
         Person currentUser = authService.findById(SecurityUtil.getCurrentUserId());
 
+        // 현재 사용자와 매칭되지 않은, 근처의 사용자 찾기
         List<RandomDogDetailResponse> dogs = matchRepository.findNearPersonNotMatched(
                         SecurityUtil.getCurrentUserId(),
                         !currentUser.isGender(),
                         currentUser.getLongitude(),
                         currentUser.getLatitude()
                 ).stream()
-                .map(person -> {
-                    // 각 상대방의 main 강아지 탐색
+                .filter(person -> {
                     Dog mainDog = dogService.findByPersonAndMain(person);
-
-                    RandomDogProfileDto randomDogProfileDto = new RandomDogProfileDto(
-                            mainDog.getName(),
-                            mainDog.isGender(),
-                            mainDog.getImage(),
-                            mainDog.getDogType().getContent(),
-                            calculateAge(mainDog.getBirth()),
-                            mapTagsToDto(mainDog.getDogTagMaps())
-                    );
-
-                    return new RandomDogDetailResponse(
-                            person.getId(),
-                            person.getLogin(),
-                            person.isGender(),
-                            calculateAge(person.getBirth()),
-                            person.getMainAddress(),
-                            randomDogProfileDto
-                    );
+                    return type == null || mainDog.getDogType().getContent().equals(type);
                 })
+                .filter(person -> {
+                    Dog mainDog = dogService.findByPersonAndMain(person);
+                    return neuter == null || mainDog.isNeuter() == neuter;
+                })
+                .filter(person -> {
+                    Dog mainDog = dogService.findByPersonAndMain(person);
+                    return tag == null || tag.isEmpty() || !Collections.disjoint(tag, mapTagsToDto(mainDog.getDogTagMaps()));
+                })
+                .map(person -> {
+                    Dog mainDog = dogService.findByPersonAndMain(person);
+                    // 채팅이나 매치가 이루어지지 않은 사용자만 선택
+                    if((!chatRepository.existsByFirstPersonAndSecondPerson(person, currentUser) && !chatRepository.existsByFirstPersonAndSecondPerson(currentUser, person)) && !matchRepository.existsBySenderAndReceiver(currentUser, person)){
+                        RandomDogProfileDto randomDogProfileDto = new RandomDogProfileDto(
+                                mainDog.getName(),
+                                mainDog.isGender(),
+                                mainDog.getImage(),
+                                mainDog.getDogType().getContent(),
+                                calculateAge(mainDog.getBirth()),
+                                mapTagsToDto(mainDog.getDogTagMaps())
+                        );
+                        return new RandomDogDetailResponse(
+                                person.getId(),
+                                person.getLogin(),
+                                person.isGender(),
+                                calculateAge(person.getBirth()),
+                                person.getMainAddress(),
+                                randomDogProfileDto
+                        );
+                    }
+                    return null;
+                })
+                // null이 아닌 결과만 선택
                 .toList();
+
         return new RandomDogDetailListResponse(dogs);
     }
+
 
     public MatchSearchResponse getPersonProfileWhoPostLike() {
         Person currentUser = authService.findById(SecurityUtil.getCurrentUserId());
@@ -76,7 +97,7 @@ public class MatchService {
         List<MatchPersonProfileDto> matchPersonProfileDtoList = matches
                 .stream()
                 .map(match -> {
-                    Long personId = match.getId();
+                    Long personId = match.getSender().getId();
                     Person person = authService.findById(personId);
                     Dog mainDog = dogService.findByPersonAndMain(person);
 
