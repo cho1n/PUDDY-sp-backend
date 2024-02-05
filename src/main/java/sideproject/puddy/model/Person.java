@@ -26,7 +26,6 @@ public class Person {
     private Double longitude;
     private LocalDate createdAt;
     private LocalDate updatedAt;
-    private String refreshToken;
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Post> posts = new ArrayList<>();
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -41,6 +40,7 @@ public class Person {
     private List<Match> matches = new ArrayList<>();
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Match> matched = new ArrayList<>();
+
     public Person(String login, String password, String mainAddress, String subAddress, LocalDate birth, boolean gender, Double latitude, Double longitude) {
         this.login = login;
         this.password = password;
@@ -70,8 +70,5 @@ public class Person {
         this.latitude = latitude;
         this.longitude = longitude;
         this.updatedAt = LocalDate.now();
-    }
-    public void updateToken(String refreshToken){
-        this.refreshToken = refreshToken;
     }
 }

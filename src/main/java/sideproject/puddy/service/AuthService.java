@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -21,9 +20,11 @@ import sideproject.puddy.exception.ErrorCode;
 import sideproject.puddy.model.Person;
 import sideproject.puddy.repository.PersonRepository;
 import sideproject.puddy.security.jwt.JwtTokenProvider;
+import sideproject.puddy.security.util.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -34,11 +35,18 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final PersonRepository personRepository;
     private final KakaoMapService kakaoMapService;
+    private final RefreshTokenService refreshTokenService;
     public boolean findSameLogin(String login){
         return personRepository.existsByLogin(login);
     }
     @Transactional
     public SignUpResponse signUp(SignUpRequest signUpRequest){
+        Pattern pattern = Pattern.compile("^[A-Za-z0-9]{8,20}$");
+        if (findSameLogin(signUpRequest.getLogin()) ||
+                !kakaoMapService.isValidMainAddress(signUpRequest.getMainAddress()) ||
+                        !pattern.matcher(signUpRequest.getPassword()).find()){
+            throw new CustomException(ErrorCode.INVALID_SIGNUP);
+        }
         String encodedPassword = encoder.encode(signUpRequest.getPassword());
         Coordinates coordinates = kakaoMapService.getCoordinate(signUpRequest.getMainAddress());
         Person person = personRepository.save(new Person(signUpRequest.getLogin(), encodedPassword,
@@ -46,13 +54,6 @@ public class AuthService {
                 LocalDate.parse(signUpRequest.getBirth(), DateTimeFormatter.ISO_DATE), signUpRequest.isGender(),
                 coordinates.getLat(), coordinates.getLng()));
         return new SignUpResponse(person.getId());
-    }
-    private ResponseEntity<String> getStringResponseEntity(TokenDto tokenDto, Person person) {
-        person.updateToken(tokenDto.getRefreshToken());
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Authorization", tokenDto.getGrantType() + " " + tokenDto.getAccessToken());
-        httpHeaders.add("ReAuthorization", tokenDto.getGrantType() + " " + tokenDto.getRefreshToken());
-        return ResponseEntity.ok().headers(httpHeaders).body("ok");
     }
     @Transactional
     public ResponseEntity<String> signIn(SignInRequest signInRequest){
@@ -65,7 +66,7 @@ public class AuthService {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         TokenDto tokenDto = jwtTokenProvider.generateToken(authentication);
         Person person = findById(Long.valueOf(authentication.getName()));
-        return getStringResponseEntity(tokenDto, person);
+        return refreshTokenService.saveToken(tokenDto, person);
     }
     @Transactional
     public ResponseEntity<String> reissue(HttpServletRequest request) {
@@ -75,11 +76,16 @@ public class AuthService {
         }
         Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
         Person person = findById(Long.valueOf(authentication.getName()));
-        if (!person.getRefreshToken().equals(refreshToken)){
+        String token = refreshTokenService.findByPersonId(person.getId());
+        if (!token.equals(refreshToken)){
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
         TokenDto tokens = jwtTokenProvider.generateToken(authentication);
-        return getStringResponseEntity(tokens, person);
+        return refreshTokenService.updateToken(tokens, person);
+    }
+    public ResponseEntity<String> logOut(){
+        Person person = findById(SecurityUtil.getCurrentUserId());
+        return refreshTokenService.deleteRefreshToken(person.getId());
     }
     public Person findById(Long id){
         return personRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));

@@ -11,6 +11,7 @@ import sideproject.puddy.dto.match.RandomDogDetailResponse;
 import sideproject.puddy.dto.tag.TagDto;
 import sideproject.puddy.dto.tag.TagListDto;
 import sideproject.puddy.service.MatchService;
+import sideproject.puddy.service.NotificationService;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class MatchController {
     private final MatchService matchService;
+    private final NotificationService notificationService;
 
     @GetMapping("/random")
     public ResponseEntity<RandomDogDetailListResponse> findMatches(
@@ -54,6 +56,7 @@ public class MatchController {
     @PostMapping("/match/{personId}")
     public ResponseEntity<String> likePost(@PathVariable Long personId) {
         matchService.likeProfile(personId);
+        notificationService.notifyAlert(personId);
         return ResponseEntity.ok("Like post successful");
     }
 }

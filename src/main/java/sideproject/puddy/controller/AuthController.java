@@ -32,4 +32,8 @@ public class AuthController {
     public boolean findSameLogin(@RequestParam String login){
         return authService.findSameLogin(login);
     }
+    @DeleteMapping("/logout")
+    public ResponseEntity<String> logout(){
+        return authService.logOut();
+    }
 }

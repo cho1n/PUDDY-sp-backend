@@ -38,7 +38,10 @@ public class SecurityConfig {
                                 "/api/auth/findsamelogin",
                                 "/api/dogtag",
                                 "/api/dogtype",
-                                "/api/dog/check"
+                                "/api/dog/check",
+                                "/ws/**",
+                                "/sub/**",
+                                "/pub/**"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);

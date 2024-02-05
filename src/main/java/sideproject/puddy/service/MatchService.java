@@ -11,7 +11,6 @@ import sideproject.puddy.dto.tag.TagListDto;
 import sideproject.puddy.exception.CustomException;
 import sideproject.puddy.exception.ErrorCode;
 import sideproject.puddy.model.*;
-import sideproject.puddy.repository.ChatRepository;
 import sideproject.puddy.repository.MatchRepository;
 import sideproject.puddy.repository.PersonRepository;
 import sideproject.puddy.security.util.SecurityUtil;
@@ -32,7 +31,7 @@ public class MatchService {
 
     private final MatchRepository matchRepository;
     private final PersonRepository personRepository;
-    private final ChatRepository chatRepository;
+    private final ChatService chatService;
     private final AuthService authService;
     private final DogService dogService;
 
@@ -152,7 +151,7 @@ public class MatchService {
         return Period.between(birthDate, currentDate).getYears();
     }
 
-        @Transactional
+    @Transactional
     public void likeProfile(Long receiverId) {
         Person sender = authService.findById(SecurityUtil.getCurrentUserId());
         Person receiver = authService.findById(receiverId);
@@ -162,7 +161,7 @@ public class MatchService {
             if (matchRepository.existsBySenderAndReceiver(receiver, sender)){
                 matchRepository.delete(findBySenderAndReceiver(sender, receiver));
                 matchRepository.delete(findBySenderAndReceiver(receiver, sender));
-                chatRepository.save(new Chat(receiver, sender));
+                chatService.saveChat(receiver, sender);
             }
         }
     }

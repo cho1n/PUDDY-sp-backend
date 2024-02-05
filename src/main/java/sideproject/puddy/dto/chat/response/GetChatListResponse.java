@@ -7,6 +7,6 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class GetChatListResonse {
-    private List<ChatDto> persons;
+public class GetChatListResponse {
+    private List<ChatResponse> chats;
 }

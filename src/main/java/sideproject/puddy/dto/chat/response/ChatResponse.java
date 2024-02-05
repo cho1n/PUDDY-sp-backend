@@ -1,13 +1,13 @@
 package sideproject.puddy.dto.chat.response;
 
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ChatDto {
+public class ChatResponse {
     private Long id;
-    private Long personId;
-    private boolean gender;
-    private ChatDogDto dog;
+    @Nullable
+    private ChatPerson person;
 }
