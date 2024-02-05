@@ -39,7 +39,9 @@ public class SecurityConfig {
                                 "/api/dogtag",
                                 "/api/dogtype",
                                 "/api/dog/check",
-                                "/ws/*"
+                                "/ws/**",
+                                "/sub/**",
+                                "/pub/**"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);

@@ -12,7 +12,6 @@ import sideproject.puddy.model.ChatMessage;
 import sideproject.puddy.model.Person;
 import sideproject.puddy.redis.RedisPublisher;
 import sideproject.puddy.repository.MessageRepository;
-import sideproject.puddy.security.util.SecurityUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,20 +27,20 @@ public class MessageService {
     private final RedisPublisher redisPublisher;
     private final AuthService authService;
     public void onMessage(PostMessageRequest postMessageRequest){
-        Person person = authService.findById(SecurityUtil.getCurrentUserId());
+        Person person = authService.findById(postMessageRequest.getCurrentUserId());
         ChatMessage chatMessage = new ChatMessage(chatService.findById(postMessageRequest.getChatId()), person, postMessageRequest.getContent());
         MessageDto messageDto = new MessageDto(chatMessage);
         messageRepository.save(chatMessage);
-        redisTemplateMessage.setValueSerializer(new Jackson2JsonRedisSerializer<>(Message.class));
+        redisTemplateMessage.setValueSerializer(new Jackson2JsonRedisSerializer<>(MessageDto.class));
         redisTemplateMessage.opsForList().rightPush(postMessageRequest.getChatId().toString(), messageDto);
         redisTemplateMessage.expire(postMessageRequest.getChatId().toString(), 1, TimeUnit.DAYS);
+        redisTemplateMessage.convertAndSend("sub/chat/" + postMessageRequest.getChatId(), messageDto);
         redisPublisher.publish(chatService.getTopic(postMessageRequest.getChatId().toString()), messageDto);
     }
     // 6. 대화 조회 - Redis & DB
     public List<MessageDto> loadMessage(Long chatId) {
         List<MessageDto> messageList = new ArrayList<>();
         Long listSize = redisTemplateMessage.opsForList().size(chatId.toString());
-
         List<MessageDto> redisMessageList = redisTemplateMessage.opsForList().range(chatId.toString(), 0, listSize-1);
 
         if (redisMessageList == null || redisMessageList.isEmpty()) {

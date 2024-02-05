@@ -35,7 +35,6 @@ public class ChatService {
     private final RedisMessageListenerContainer redisMessageListener;
     private final RedisSubscriber redisSubscriber;
     private final RedisTemplate<String, Object> redisTemplate;
-
     private HashOperations<String, String, ChatDto> opsHashMessageRoom;
     @PostConstruct
     private void init() {
@@ -72,13 +71,15 @@ public class ChatService {
             opsHashMessageRoom.put("MESSAGE_ROOM", chat.getId().toString(), chatDto);
         }
     }
-    public ResponseEntity<String> enterChat(String chatId){
-        if(!topics.containsKey(chatId) && chatRepository.existsById(Long.valueOf(chatId))) {
-            ChannelTopic topic = new ChannelTopic(chatId);
-            redisMessageListener.addMessageListener(redisSubscriber, topic);
-            topics.put(chatId, topic);
+    public void enterChat(String chatId){
+        if (!topics.containsKey(chatId)) {
+            if (chatRepository.existsById(Long.valueOf(chatId))) {
+                ChannelTopic topic = new ChannelTopic(chatId);
+                redisMessageListener.addMessageListener(redisSubscriber, topic);
+                topics.put(chatId, topic);
+            }
         }
-        return ResponseEntity.ok().body("ok");
+        log.info("{}, {}",topics.get(chatId).getTopic(), redisMessageListener.getConnectionFactory());
     }
     @Transactional
     public ResponseEntity<String> deleteChat(Long chatId){

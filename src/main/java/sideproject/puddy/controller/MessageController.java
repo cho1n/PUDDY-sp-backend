@@ -21,6 +21,7 @@ public class MessageController {
 
     @MessageMapping("/message")
     public ResponseEntity<String> message(PostMessageRequest postMessageRequest) {
+        log.info("{}", postMessageRequest.getCurrentUserId());
         messageService.onMessage(postMessageRequest);
         return ResponseEntity.ok().body("ok");
     }
