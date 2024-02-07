@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 import sideproject.puddy.dto.message.MessageDto;
 import sideproject.puddy.dto.message.request.PostMessageRequest;
@@ -50,7 +49,7 @@ public class MessageService {
             for (ChatMessage message : dbMessageList) {
                 MessageDto messageDto = new MessageDto(message);
                 messageList.add(messageDto);
-                redisTemplateMessage.setValueSerializer(new Jackson2JsonRedisSerializer<>(Message.class));      // 직렬화
+                redisTemplateMessage.setValueSerializer(new Jackson2JsonRedisSerializer<>(MessageDto.class));      // 직렬화
                 redisTemplateMessage.opsForList().rightPush(chatId.toString(), messageDto);                     // redis 저장
             }
         } else {

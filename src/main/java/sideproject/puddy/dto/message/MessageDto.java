@@ -21,11 +21,14 @@ public class MessageDto {
     private String content;
     @JsonProperty("senderId")
     private Long senderId;
+    @JsonProperty("createdAt")
+    private String createdAt;
 
     public MessageDto(ChatMessage message){
         this.id = message.getId();
         this.chatId = message.getChat().getId();
         this.content = message.getContent();
         this.senderId = message.getSender().getId();
+        this.createdAt = message.getCreatedAt().toString();
     }
 }
