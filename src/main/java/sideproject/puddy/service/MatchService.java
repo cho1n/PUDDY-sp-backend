@@ -14,6 +14,7 @@ import sideproject.puddy.model.*;
 import sideproject.puddy.repository.MatchRepository;
 import sideproject.puddy.repository.PersonRepository;
 import sideproject.puddy.security.util.SecurityUtil;
+import sideproject.puddy.repository.ChatRepository;
 
 
 import java.time.LocalDate;
@@ -34,7 +35,7 @@ public class MatchService {
     private final ChatService chatService;
     private final AuthService authService;
     private final DogService dogService;
-
+    private final ChatRepository chatRepository;
 
     // 위치, 매칭 여부 -> (성별, 나이, 반려견 정보)
     public RandomDogDetailListResponse getMatchingByDog(String type, Boolean neuter, List<TagDto> tag){
@@ -84,6 +85,7 @@ public class MatchService {
                     return null;
                 })
                 // null이 아닌 결과만 선택
+                .filter(Objects::nonNull)
                 .toList();
 
         return new RandomDogDetailListResponse(dogs);
