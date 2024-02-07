@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import sideproject.puddy.model.ChatMessage;
 
+import java.time.temporal.ChronoUnit;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,14 +23,17 @@ public class MessageDto {
     private String content;
     @JsonProperty("senderId")
     private Long senderId;
-    @JsonProperty("createdAt")
-    private String createdAt;
+    @JsonProperty("date")
+    private String date;
+    @JsonProperty("time")
+    private String time;
 
     public MessageDto(ChatMessage message){
         this.id = message.getId();
         this.chatId = message.getChat().getId();
         this.content = message.getContent();
         this.senderId = message.getSender().getId();
-        this.createdAt = message.getCreatedAt().toString();
+        this.date = message.getCreatedAt().toLocalDate().toString();
+        this.time = message.getCreatedAt().toLocalTime().truncatedTo(ChronoUnit.MINUTES).toString();
     }
 }
