@@ -42,7 +42,7 @@ public class RedisConfig {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(connectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());        // Key Serializer
-        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));      // Value Serializer
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));      // Value Serializer
 
         return redisTemplate;
     }
@@ -51,7 +51,7 @@ public class RedisConfig {
         RedisTemplate<String, MessageDto> redisTemplateMessage = new RedisTemplate<>();
         redisTemplateMessage.setConnectionFactory(connectionFactory);
         redisTemplateMessage.setKeySerializer(new StringRedisSerializer());        // Key Serializer
-        redisTemplateMessage.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));      // Value Serializer
+        redisTemplateMessage.setValueSerializer(new Jackson2JsonRedisSerializer<>(MessageDto.class));      // Value Serializer
 
         return redisTemplateMessage;
     }
