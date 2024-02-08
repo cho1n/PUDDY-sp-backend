@@ -23,7 +23,7 @@ public class TrailReviewController {
     }
     @GetMapping("/review")
     public TrailReviewListResponse getTrailReviewList(@PathVariable Long trailId, @RequestParam int pageNum){
-        PageRequest pageRequest = PageRequest.of(pageNum - 1, 6, Sort.by("createdAt").descending());
+        PageRequest pageRequest = PageRequest.of(pageNum - 1, 6, Sort.by("id").descending());
         return trailReviewService.findAllReviewByTrail(trailId, pageRequest);
     }
     @DeleteMapping("/review/{reviewId}")
