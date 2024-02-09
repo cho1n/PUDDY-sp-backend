@@ -16,6 +16,7 @@ public class TrailReview {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer star;
+    @Column(length = 1000)
     private String content;
     @ManyToOne
     @JoinColumn(name = "reviewer_id")

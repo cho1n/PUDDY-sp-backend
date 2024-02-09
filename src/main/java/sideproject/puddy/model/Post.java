@@ -21,6 +21,7 @@ public class Post {
     @JoinColumn(name = "person_id")
     private Person person;
     private String title;
+    @Column(length = 1000)
     private String content;
     private LocalDate createdAt;
     private LocalDate updatedAt;
