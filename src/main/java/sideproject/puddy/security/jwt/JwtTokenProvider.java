@@ -32,13 +32,13 @@ public class JwtTokenProvider {
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("auth", "ROLE_USER")
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 180))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
         String refreshToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("auth", "ROLE_USER")
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 180))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
         return TokenDto.builder()

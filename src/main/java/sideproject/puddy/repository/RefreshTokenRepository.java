@@ -16,7 +16,7 @@ public class RefreshTokenRepository {
     public void save(String refreshToken, Long personId){
         String key = genKey(personId);
         redisTemplate.opsForValue().set(key, refreshToken);
-        redisTemplate.expire(key, 3, TimeUnit.HOURS);
+        redisTemplate.expire(key, 7, TimeUnit.DAYS);
     }
     public String findByPersonId(Long personId){
         String key = genKey(personId);
@@ -33,6 +33,6 @@ public class RefreshTokenRepository {
     public void update(String newRefreshToken, Long personId){
         String key = genKey(personId);
         redisTemplate.opsForValue().set(key, newRefreshToken);
-        redisTemplate.expire(key, 3, TimeUnit.HOURS);
+        redisTemplate.expire(key, 7, TimeUnit.DAYS);
     }
 }
