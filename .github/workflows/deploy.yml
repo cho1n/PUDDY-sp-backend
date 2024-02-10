@@ -67,4 +67,4 @@ jobs:
           script: |
             docker compose down
             docker image prune -a
-            docker compose up
+            docker compose up -d
