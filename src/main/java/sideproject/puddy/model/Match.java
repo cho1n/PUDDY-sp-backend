@@ -9,10 +9,11 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
+@Table(name = "matching")
 @NoArgsConstructor(access= AccessLevel.PROTECTED)
 public class Match {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumn(name = "sender_id")
