@@ -20,6 +20,7 @@ public class ChatController {
     public GetChatListResponse getChatList(){
         return chatService.getChatList();
     }
+
     @GetMapping("/chat/{chatId}")
     public ResponseEntity<ChatDetailResponse> enterChat(@PathVariable Long chatId){
         return chatAndMessageService.enterChat(chatId);
